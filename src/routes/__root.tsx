@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -88,6 +89,7 @@ function RootComponent() {
         <Navbar />
         <main className="flex-1"><Outlet /></main>
         <Footer />
+        <Toaster richColors position="top-right" />
       </div>
     </QueryClientProvider>
   );
