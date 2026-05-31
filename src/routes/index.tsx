@@ -67,19 +67,19 @@ function Hero() {
 /* ───────────── What You Get ───────────── */
 function WhatYouGet() {
   const cards = [
-    { icon: Users, title: "Buyer Persona", desc: "Detailed profile with goals and pains." },
-    { icon: Megaphone, title: "Campaign Headline", desc: "A bold, ready-to-test message." },
-    { icon: MousePointerClick, title: "CTA", desc: "A high-converting call-to-action." },
-    { icon: Linkedin, title: "LinkedIn Post", desc: "Native-format post for organic reach." },
-    { icon: Mail, title: "Email Copy", desc: "Subject line and full email body." },
-    { icon: Lightbulb, title: "Recommendations", desc: "Tactical next steps for your team." },
+    { icon: Users, title: "Buyer Persona", desc: "Role-based persona with goals, challenges and motivations." },
+    { icon: Megaphone, title: "Campaign Headline", desc: "A campaign-ready headline aligned with your objective." },
+    { icon: MousePointerClick, title: "Primary CTA", desc: "A clear action designed to drive results." },
+    { icon: Linkedin, title: "Social Media Post", desc: "Platform-appropriate content tailored to your audience." },
+    { icon: Mail, title: "Email Copy", desc: "Subject line and complete email ready to customize." },
+    { icon: Lightbulb, title: "Creative Suggestions", desc: "Content format, visual ideas and engagement recommendations." },
   ];
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">What you get</h2>
-          <p className="mt-3 text-muted-foreground">Six AI-generated assets. One brief. Zero templates.</p>
+          <p className="mt-3 text-muted-foreground">One brief. A complete AI-generated marketing campaign.</p>
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map(({ icon: Icon, title, desc }) => (
