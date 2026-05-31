@@ -8,10 +8,18 @@ import { TypebotEmbed } from "@/components/TypebotEmbed";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Marketing AI Lab — AI Marketing Campaigns in Minutes" },
-      { name: "description", content: "Generate a complete marketing campaign with AI: buyer persona, headline, CTA, LinkedIn post, email copy, and recommendations — in minutes." },
-      { property: "og:title", content: "Marketing AI Lab" },
-      { property: "og:description", content: "AI-powered marketing campaigns in minutes." },
+      { title: "Campaign Generator AI | Create Marketing Campaigns with AI" },
+      { name: "description", content: "Generate complete marketing campaigns in minutes. Get buyer personas, headlines, CTAs, social posts, email copy, and creative recommendations powered by AI." },
+      { property: "og:title", content: "Campaign Generator AI" },
+      { property: "og:description", content: "Create complete marketing campaigns with AI in minutes." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de1ee971-29f4-4659-a342-599b85939247/id-preview-e44e50f8--bdc65a74-fdf9-4cce-9fbf-bfd4a83333e4.lovable.app-1780242951323.png" },
+      { property: "og:url", content: "https://campaign-generator-ai.lovable.app/" },
+      { name: "twitter:title", content: "Campaign Generator AI" },
+      { name: "twitter:description", content: "Create complete marketing campaigns with AI in minutes." },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de1ee971-29f4-4659-a342-599b85939247/id-preview-e44e50f8--bdc65a74-fdf9-4cce-9fbf-bfd4a83333e4.lovable.app-1780242951323.png" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://campaign-generator-ai.lovable.app/" },
     ],
   }),
   component: Landing,
