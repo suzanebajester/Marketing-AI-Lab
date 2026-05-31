@@ -1,10 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Sparkles, ArrowRight, Users, Megaphone, MousePointerClick, Linkedin, Mail,
-  Lightbulb, CheckCircle2, Clock, FileText, Search, Calendar, Star, Quote,
+  Lightbulb, Check, CheckCircle2, Loader2, Copy, RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { exampleCampaign } from "@/lib/campaign";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { generateMockCampaign, type CampaignInput, type GeneratedCampaign, exampleCampaign } from "@/lib/campaign";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,51 +24,59 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const [campaign, setCampaign] = useState<GeneratedCampaign | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerated = (c: GeneratedCampaign) => {
+    setCampaign(c);
+    setLoading(false);
+    toast.success("Campaign generated!");
+    setTimeout(() => {
+      document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
   return (
     <div>
       <Hero />
-      <Logos />
-      <Problem />
-      <Solution />
-      <HowItWorks />
-      <Features />
-      <ExampleOutput />
-      <Testimonials />
-      <FinalCTA />
+      <WhatYouGet />
+      <GeneratorSection onGenerated={handleGenerated} loading={loading} setLoading={setLoading} />
+      {campaign && <ExampleResult campaign={campaign} />}
+      <PricingSection />
     </div>
   );
 }
 
+/* ───────────── Hero ───────────── */
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-50" />
-      <div className="absolute inset-x-0 top-0 -z-10 h-[600px] bg-gradient-soft" />
-      <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-24 sm:px-6 lg:px-8 lg:pt-28">
+      <div className="absolute inset-0 grid-bg opacity-40" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-[520px] bg-gradient-soft" />
+      <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-24">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            Powered by next-gen marketing AI
+            AI-powered marketing campaigns
           </div>
           <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
             Create Complete Marketing Campaigns with{" "}
             <span className="text-gradient">AI in Minutes</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Generate buyer personas, headlines, CTAs, LinkedIn posts, email campaigns,
-            and marketing ideas through a simple AI-powered workflow.
+          <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
+            Generate buyer personas, headlines, CTAs, LinkedIn posts, and email campaigns from a single brief.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild variant="hero" size="xl">
-              <Link to="/generator">
-                Generate My Campaign <ArrowRight className="h-4 w-4" />
-              </Link>
+              <a href="#generator">
+                Generate Campaign <ArrowRight className="h-4 w-4" />
+              </a>
             </Button>
             <Button asChild variant="outline" size="xl">
-              <a href="#example">View Example</a>
+              <a href="#example">See Example</a>
             </Button>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-3 text-xs text-muted-foreground">
             Free forever plan · No credit card required
           </p>
         </div>
@@ -76,8 +89,8 @@ function Hero() {
 
 function DashboardMockup() {
   return (
-    <div className="relative mx-auto mt-20 max-w-5xl">
-      <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-hero opacity-20 blur-3xl" />
+    <div className="relative mx-auto mt-16 max-w-5xl">
+      <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-hero opacity-15 blur-3xl" />
       <div className="overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-elevated">
         <div className="flex items-center gap-1.5 border-b border-border bg-muted/40 px-4 py-3">
           <div className="h-3 w-3 rounded-full bg-destructive/60" />
@@ -85,7 +98,7 @@ function DashboardMockup() {
           <div className="h-3 w-3 rounded-full bg-success/60" />
           <div className="ml-4 rounded-md bg-surface-elevated px-3 py-1 text-xs text-muted-foreground">marketingailab.com/campaign</div>
         </div>
-        <div className="grid gap-4 p-6 md:grid-cols-3">
+        <div className="grid gap-3 p-5 md:grid-cols-3">
           <MockCard icon={<Users className="h-4 w-4" />} title="Buyer Persona" badge="Generated">
             <div className="text-xs font-semibold">Sarah Mitchell · 35</div>
             <div className="mt-1 text-xs text-muted-foreground">Head of Marketing, B2B SaaS</div>
@@ -135,82 +148,30 @@ function MockCard({ icon, title, badge, children }: { icon: React.ReactNode; tit
   );
 }
 
-function Logos() {
-  return (
-    <section className="border-y border-border bg-surface py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Trusted by modern marketing teams
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-70">
-          {["Northwind", "Acme.io", "Stratus", "Lumen Labs", "Helio", "Vertex"].map((n) => (
-            <span key={n} className="font-display text-lg font-bold tracking-tight text-muted-foreground">{n}</span>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Problem() {
-  const items = [
-    { icon: FileText, t: "Creating content from scratch", d: "Every campaign starts with a blank page." },
-    { icon: Users, t: "Defining target audiences", d: "Persona research takes days, not hours." },
-    { icon: Mail, t: "Writing email campaigns", d: "Sequencing and copywriting eat your week." },
-    { icon: Linkedin, t: "Producing LinkedIn content", d: "Consistent posting is hard to maintain." },
-    { icon: Lightbulb, t: "Generating campaign ideas", d: "Ideation fatigue slows down launches." },
-    { icon: Clock, t: "Time-to-launch is too slow", d: "Briefs sit waiting for revisions." },
-  ];
-  return (
-    <section className="py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="The Problem"
-          title="Marketing Teams Waste Hours Creating Campaigns"
-          desc="Modern marketers juggle five tools, three stakeholders, and an endless backlog. The result? Slow, inconsistent output."
-        />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map(({ icon: Icon, t, d }) => (
-            <div key={t} className="rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                <Icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-semibold">{t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Solution() {
+/* ───────────── What You Get ───────────── */
+function WhatYouGet() {
   const cards = [
-    { icon: Users, t: "Buyer Persona", d: "Detailed customer profile with goals and pains." },
-    { icon: Megaphone, t: "Campaign Headline", d: "Benefit-driven, on-brand, conversion-ready." },
-    { icon: MousePointerClick, t: "CTA", d: "Click-optimized call-to-action copy." },
-    { icon: Linkedin, t: "LinkedIn Post", d: "Native-format social content that performs." },
-    { icon: Mail, t: "Email Copy", d: "Subject line + body, ready to send." },
-    { icon: Lightbulb, t: "Recommendations", d: "Tactical next steps to launch faster." },
+    { icon: Users, title: "Buyer Persona" },
+    { icon: Megaphone, title: "Campaign Headline" },
+    { icon: MousePointerClick, title: "CTA" },
+    { icon: Linkedin, title: "LinkedIn Post" },
+    { icon: Mail, title: "Email Copy" },
+    { icon: Lightbulb, title: "Campaign Recommendations" },
   ];
   return (
-    <section className="bg-gradient-soft py-24">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="The Solution"
-          title="One AI Workflow. Complete Marketing Campaign."
-          desc="Answer a few questions. Get every asset you need to launch — instantly."
-        />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map(({ icon: Icon, t, d }) => (
-            <div key={t} className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated">
-              <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-hero opacity-0 blur-2xl transition-opacity group-hover:opacity-30" />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-hero text-primary-foreground shadow-glow">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">What You Get</h2>
+          <p className="mt-3 text-muted-foreground">Six AI-generated assets. One brief. Zero templates.</p>
+        </div>
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map(({ icon: Icon, title }) => (
+            <div key={title} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:shadow-elevated">
+              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-hero text-primary-foreground shadow-glow">
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="relative mt-5 font-display text-lg font-semibold">{t}</h3>
-              <p className="relative mt-2 text-sm text-muted-foreground">{d}</p>
+              <h3 className="font-display text-base font-semibold">{title}</h3>
             </div>
           ))}
         </div>
@@ -219,188 +180,284 @@ function Solution() {
   );
 }
 
-function HowItWorks() {
-  const steps = [
-    { n: "01", t: "Answer a few questions", d: "Industry, audience, goal, channel and tone — that's it." },
-    { n: "02", t: "AI analyzes your business", d: "Our model synthesizes persona, positioning and channel fit." },
-    { n: "03", t: "Receive a complete campaign", d: "Personas, headlines, CTAs, posts and email — ready to use." },
-  ];
-  return (
-    <section className="py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow="How It Works" title="Three steps. One campaign." desc="A streamlined workflow built for marketing teams that move fast." />
-        <div className="relative mt-14 grid gap-8 md:grid-cols-3">
-          <div className="absolute left-0 right-0 top-8 hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
-          {steps.map((s) => (
-            <div key={s.n} className="relative text-center">
-              <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-elevated font-display text-xl font-bold text-gradient shadow-card ring-1 ring-border">
-                {s.n}
-              </div>
-              <h3 className="mt-6 font-display text-xl font-semibold">{s.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+/* ───────────── Inline Generator ───────────── */
+function GeneratorSection({
+  onGenerated,
+  loading,
+  setLoading,
+}: {
+  onGenerated: (c: GeneratedCampaign) => void;
+  loading: boolean;
+  setLoading: (v: boolean) => void;
+}) {
+  const [input, setInput] = useState<CampaignInput>({
+    industry: "", country: "", audience: "", goal: "",
+    channel: "LinkedIn", tone: "Professional",
+  });
 
-function Features() {
-  const features = [
-    { icon: Sparkles, t: "AI Campaign Generator", available: true },
-    { icon: Users, t: "Buyer Persona Generator" },
-    { icon: Linkedin, t: "LinkedIn Post Generator" },
-    { icon: Search, t: "SEO Brief Generator" },
-    { icon: Mail, t: "Email Sequence Generator" },
-    { icon: Calendar, t: "Content Calendar Generator" },
-  ];
-  return (
-    <section id="features" className="bg-surface py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow="AI Tools" title="A growing suite of marketing AI" desc="Start with our flagship campaign generator. More tools shipping every month." />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map(({ icon: Icon, t, available }) => (
-            <div key={t} className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6 shadow-card">
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-hero text-primary-foreground">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-display font-semibold">{t}</h3>
-                  {available ? (
-                    <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-semibold text-success">Available</span>
-                  ) : (
-                    <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">Coming Soon</span>
-                  )}
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">Production-ready outputs designed for modern marketing teams.</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      onGenerated(generateMockCampaign(input));
+    }, 1200);
+  };
 
-function ExampleOutput() {
-  const c = exampleCampaign;
-  return (
-    <section id="example" className="py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow="Example Output" title="See what AI generates for you" desc="A real campaign produced by Marketing AI Lab in under 90 seconds." />
-        <div className="mt-14 grid gap-6 lg:grid-cols-2">
-          <OutputCard icon={<Users className="h-4 w-4" />} title="Buyer Persona">
-            <div className="font-semibold">{c.persona.name}</div>
-            <div className="text-sm text-muted-foreground">{c.persona.role}</div>
-            <div className="mt-4 space-y-3 text-sm">
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Goals</div>
-                <ul className="mt-1 space-y-1">{c.persona.goals.map((g) => <li key={g} className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />{g}</li>)}</ul>
-              </div>
-            </div>
-          </OutputCard>
-          <OutputCard icon={<Megaphone className="h-4 w-4" />} title="Headline">
-            <div className="font-display text-2xl font-bold leading-tight">{c.headline}</div>
-            <div className="mt-6 rounded-lg border border-border bg-surface p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">CTA</div>
-              <div className="mt-2 font-semibold">{c.cta}</div>
-            </div>
-          </OutputCard>
-          <OutputCard icon={<Linkedin className="h-4 w-4" />} title="LinkedIn Post">
-            <p className="whitespace-pre-wrap text-sm leading-relaxed">{c.linkedinPost}</p>
-          </OutputCard>
-          <OutputCard icon={<Mail className="h-4 w-4" />} title="Email Copy">
-            <div className="text-sm font-semibold">Subject: {c.email.subject}</div>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{c.email.body}</p>
-          </OutputCard>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function OutputCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
-      <div className="flex items-center justify-between border-b border-border pb-4">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <span className="text-primary">{icon}</span>{title}
-        </div>
-        <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground">AI-generated</span>
-      </div>
-      <div className="pt-4">{children}</div>
+  const field = (label: string, child: React.ReactNode) => (
+    <div>
+      <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</Label>
+      <div className="mt-1.5">{child}</div>
     </div>
   );
-}
 
-function Testimonials() {
-  const items = [
-    { name: "Priya Sharma", role: "VP Marketing, Northwind", quote: "We cut campaign production from 3 weeks to one afternoon. The persona depth alone is worth it." },
-    { name: "Marcus Chen", role: "Head of Growth, Stratus", quote: "It's the first AI tool my team actually keeps open. The outputs feel like a senior copywriter." },
-    { name: "Elena Rossi", role: "CMO, Lumen Labs", quote: "We launched three campaigns in a single week. Pipeline impact was immediate and measurable." },
-  ];
   return (
-    <section className="bg-surface py-24">
+    <section id="generator" className="bg-gradient-soft py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader eyebrow="Loved by marketers" title="Built for teams that ship" />
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {items.map((t) => (
-            <div key={t.name} className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-card">
-              <Quote className="h-6 w-6 text-primary/40" />
-              <p className="mt-4 flex-1 text-sm leading-relaxed">{t.quote}</p>
-              <div className="mt-6 flex items-center gap-3 border-t border-border pt-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-hero font-semibold text-primary-foreground">
-                  {t.name[0]}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
-                </div>
-                <div className="ml-auto flex">
-                  {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-chart-4 text-chart-4" />)}
-                </div>
-              </div>
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">AI Campaign Generator</h2>
+          <p className="mt-3 text-muted-foreground">Answer six questions. Get a complete campaign instantly.</p>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-3xl">
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-2xl border border-border bg-card p-6 shadow-elevated sm:p-8"
+          >
+            <div className="grid gap-5 sm:grid-cols-2">
+              {field("Industry / Niche", (
+                <Input
+                  placeholder="e.g. B2B SaaS, Fintech, E-commerce"
+                  value={input.industry}
+                  onChange={(e) => setInput({ ...input, industry: e.target.value })}
+                  required
+                />
+              ))}
+              {field("Country", (
+                <Input
+                  placeholder="e.g. United States"
+                  value={input.country}
+                  onChange={(e) => setInput({ ...input, country: e.target.value })}
+                  required
+                />
+              ))}
+              {field("Target Audience", (
+                <Input
+                  placeholder="e.g. Heads of Marketing at scale-ups"
+                  value={input.audience}
+                  onChange={(e) => setInput({ ...input, audience: e.target.value })}
+                  required
+                />
+              ))}
+              {field("Campaign Goal", (
+                <Input
+                  placeholder="e.g. Generate 50 demos this quarter"
+                  value={input.goal}
+                  onChange={(e) => setInput({ ...input, goal: e.target.value })}
+                  required
+                />
+              ))}
+              {field("Marketing Channel", (
+                <Select value={input.channel} onValueChange={(v) => setInput({ ...input, channel: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["LinkedIn", "Email Marketing", "Google Ads", "Facebook Ads"].map((o) => (
+                      <SelectItem key={o} value={o}>{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ))}
+              {field("Tone of Voice", (
+                <Select value={input.tone} onValueChange={(v) => setInput({ ...input, tone: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["Professional", "Friendly", "Technical", "Bold"].map((o) => (
+                      <SelectItem key={o} value={o}>{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ))}
             </div>
-          ))}
+
+            <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
+              <Button type="submit" variant="hero" size="xl" className="w-full sm:w-auto" disabled={loading}>
+                {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</> : <><Sparkles className="h-4 w-4" /> Generate Campaign</>}
+              </Button>
+              <Button type="button" variant="outline" size="xl" className="w-full sm:w-auto" disabled={loading} onClick={() => {
+                setLoading(true);
+                setTimeout(() => {
+                  onGenerated(exampleCampaign);
+                }, 800);
+              }}>
+                See Example
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
     </section>
   );
 }
 
-function FinalCTA() {
+/* ───────────── Example Result (compact) ───────────── */
+function ExampleResult({ campaign }: { campaign: GeneratedCampaign }) {
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const handleCopy = async (text: string, label: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(label);
+    toast.success(`${label} copied`);
+    setTimeout(() => setCopiedField(null), 1500);
+  };
+
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-hero p-12 text-center shadow-elevated sm:p-16">
-          <div className="absolute inset-0 grid-bg opacity-20" />
-          <div className="relative">
-            <h2 className="font-display text-3xl font-bold text-primary-foreground sm:text-5xl">
-              Ready to Build Better Campaigns?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-primary-foreground/85">
-              Join hundreds of marketing teams shipping campaigns faster with AI.
-            </p>
-            <div className="mt-8">
-              <Button asChild size="xl" className="bg-surface-elevated text-foreground hover:bg-surface-elevated/90">
-                <Link to="/generator">Generate My Campaign <ArrowRight className="h-4 w-4" /></Link>
-              </Button>
+    <section id="example" className="py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Your Campaign</h2>
+          <p className="mt-3 text-muted-foreground">Here's what AI generated for your brief.</p>
+        </div>
+
+        <div className="mx-auto mt-10 grid max-w-4xl gap-5 md:grid-cols-3">
+          {/* Persona */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <Users className="h-4 w-4 text-primary" /> Buyer Persona
+            </div>
+            <div className="mt-4">
+              <div className="font-semibold">{campaign.persona.name}</div>
+              <div className="text-sm text-muted-foreground">{campaign.persona.role}</div>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Goals</div>
+                  <ul className="mt-1 space-y-1">
+                    {campaign.persona.goals.map((g) => (
+                      <li key={g} className="flex gap-2 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />{g}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Pains</div>
+                  <ul className="mt-1 space-y-1">
+                    {campaign.persona.pains.map((p) => (
+                      <li key={p} className="flex gap-2 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />{p}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Headline */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Megaphone className="h-4 w-4 text-primary" /> Headline
+              </div>
+              <button
+                onClick={() => handleCopy(campaign.headline, "Headline")}
+                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Copy"
+              >
+                {copiedField === "Headline" ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+              </button>
+            </div>
+            <div className="mt-6 font-display text-2xl font-bold leading-tight">{campaign.headline}</div>
+          </div>
+
+          {/* CTA */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <MousePointerClick className="h-4 w-4 text-primary" /> CTA
+              </div>
+              <button
+                onClick={() => handleCopy(campaign.cta, "CTA")}
+                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Copy"
+              >
+                {copiedField === "CTA" ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+              </button>
+            </div>
+            <div className="mt-6 rounded-lg bg-gradient-hero p-5 text-center font-semibold text-primary-foreground">
+              {campaign.cta}
             </div>
           </div>
         </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button asChild variant="hero">
+            <Link to="/generator">Open Full Workspace <ArrowRight className="h-4 w-4" /></Link>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const el = document.getElementById("generator");
+              el?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <RefreshCw className="h-4 w-4" /> Generate Another
+          </Button>
+        </div>
       </div>
     </section>
   );
 }
 
-function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
+/* ───────────── Pricing ───────────── */
+function PricingSection() {
+  const plans = [
+    {
+      name: "Free", price: "$0", period: "forever",
+      desc: "Try Marketing AI Lab risk-free.",
+      features: ["3 campaigns per month", "Core AI generator", "Community support"],
+      cta: "Start free", variant: "outline" as const,
+    },
+    {
+      name: "Pro", price: "$19", period: "per month",
+      desc: "For marketers who ship daily.",
+      features: ["Unlimited campaigns", "Export campaigns", "Save history", "Priority support"],
+      cta: "Start 14-day free trial", variant: "hero" as const, highlighted: true,
+    },
+  ];
+
   return (
-    <div className="mx-auto max-w-2xl text-center">
-      <div className="text-xs font-semibold uppercase tracking-widest text-primary">{eyebrow}</div>
-      <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
-      {desc && <p className="mt-4 text-muted-foreground">{desc}</p>}
-    </div>
+    <section className="bg-gradient-soft py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Pricing</h2>
+          <p className="mt-3 text-muted-foreground">Start free. Upgrade when you're ready.</p>
+        </div>
+
+        <div className="mx-auto mt-10 grid max-w-3xl gap-6 md:grid-cols-2">
+          {plans.map((p) => (
+            <div
+              key={p.name}
+              className={`relative flex flex-col rounded-2xl border bg-card p-8 shadow-card ${p.highlighted ? "border-primary shadow-glow ring-2 ring-primary/20" : "border-border"}`}
+            >
+              {p.highlighted && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-hero px-3 py-1 text-xs font-semibold text-primary-foreground shadow-md">
+                  Most popular
+                </div>
+              )}
+              <div className="font-display text-lg font-semibold">{p.name}</div>
+              <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
+              <div className="mt-5 flex items-baseline gap-1.5">
+                <span className="font-display text-5xl font-bold">{p.price}</span>
+                <span className="text-sm text-muted-foreground">/ {p.period}</span>
+              </div>
+              <ul className="mt-8 flex-1 space-y-3 text-sm">
+                {p.features.map((f) => (
+                  <li key={f} className="flex gap-2">
+                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" /> {f}
+                  </li>
+                ))}
+              </ul>
+              <Button asChild variant={p.variant} size="lg" className="mt-8 w-full">
+                <Link to="/generator">{p.cta}</Link>
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
