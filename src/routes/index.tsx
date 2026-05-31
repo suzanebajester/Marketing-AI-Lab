@@ -357,7 +357,7 @@ function ExampleResult({ campaign }: { campaign: GeneratedCampaign }) {
                 className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 aria-label="Copy"
               >
-                {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+                {copiedField === "Headline" ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>
             <div className="mt-6 font-display text-2xl font-bold leading-tight">{campaign.headline}</div>
@@ -374,7 +374,7 @@ function ExampleResult({ campaign }: { campaign: GeneratedCampaign }) {
                 className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 aria-label="Copy"
               >
-                {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+                {copiedField === "CTA" ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>
             <div className="mt-6 rounded-lg bg-gradient-hero p-5 text-center font-semibold text-primary-foreground">
