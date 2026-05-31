@@ -27,7 +27,6 @@ export function Navbar() {
               to={l.to}
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-foreground" }}
-              activeOptions={{ exact: l.to === "/" }}
             >
               {l.label}
             </Link>
