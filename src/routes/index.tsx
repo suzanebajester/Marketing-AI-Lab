@@ -300,12 +300,12 @@ function GeneratorSection({
 
 /* ───────────── Example Result (compact) ───────────── */
 function ExampleResult({ campaign }: { campaign: GeneratedCampaign }) {
-  const [copied, setCopied] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const handleCopy = async (text: string, label: string) => {
     await navigator.clipboard.writeText(text);
-    setCopied(true);
+    setCopiedField(label);
     toast.success(`${label} copied`);
-    setTimeout(() => setCopied(false), 1500);
+    setTimeout(() => setCopiedField(null), 1500);
   };
 
   return (
