@@ -4,11 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/tools", label: "AI Tools" },
+  { to: "/generator", label: "Generator" },
   { to: "/pricing", label: "Pricing" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function Navbar() {
