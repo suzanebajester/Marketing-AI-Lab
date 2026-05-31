@@ -48,7 +48,7 @@ function Hero() {
             <span className="text-gradient">AI in Minutes</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
-            Answer six questions and get a buyer persona, headline, CTA, LinkedIn post, email copy, and recommendations — instantly.
+            Go from idea to campaign in minutes. Answer six questions and get a complete marketing campaign tailored to your audience, offer, goals, and brand voice.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button variant="hero" size="xl" onClick={scrollToGenerator}>
