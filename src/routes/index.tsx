@@ -114,7 +114,7 @@ function GeneratorSection() {
             Generate your campaign
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Answer a few questions in the chat below. Free during beta — no credit card required.
+            Answer a few questions in the chat below.
           </p>
         </div>
 
