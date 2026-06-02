@@ -35,6 +35,7 @@ function Landing() {
       <Hero />
       <WhatYouGet />
       <GeneratorSection />
+      <AboutSection />
     </div>
   );
 }
@@ -47,25 +48,18 @@ function Hero() {
       <div className="absolute inset-x-0 top-0 -z-10 h-[520px] bg-gradient-soft" />
       <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-24">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            Currently in Free Beta
-          </div>
-          <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-            Create Complete Marketing Campaigns with{" "}
-            <span className="text-gradient">AI in Minutes</span>
+          <h1 className="font-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            Generate a Complete Marketing Campaign{" "}
+            <span className="text-gradient">Strategy in Minutes</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
-            Go from idea to campaign in minutes. Answer six questions and get a complete marketing campaign tailored to your audience, offer, goals, and brand voice.
+            Answer a few questions and receive a buyer persona, campaign messaging, email copy, social media content and creative recommendations powered by AI.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button variant="hero" size="xl" onClick={scrollToGenerator}>
               Generate My Campaign <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Currently in Free Beta · No credit card required
-          </p>
         </div>
       </div>
     </section>
@@ -75,12 +69,12 @@ function Hero() {
 /* ───────────── What You Get ───────────── */
 function WhatYouGet() {
   const cards = [
-    { icon: Users, title: "Buyer Persona", desc: "Role-based persona with goals, challenges and motivations." },
-    { icon: Megaphone, title: "Campaign Headline", desc: "A campaign-ready headline aligned with your objective." },
-    { icon: MousePointerClick, title: "Primary CTA", desc: "A clear action designed to drive results." },
-    { icon: Linkedin, title: "Social Media Post", desc: "Platform-appropriate content tailored to your audience." },
-    { icon: Mail, title: "Email Copy", desc: "Subject line and complete email ready to customize." },
-    { icon: Lightbulb, title: "Creative Suggestions", desc: "Content format, visual ideas and engagement recommendations." },
+    { icon: Users, title: "Buyer Persona", desc: "Understand who you're targeting and what motivates them." },
+    { icon: Megaphone, title: "Campaign Messaging", desc: "Define a clear and compelling campaign direction." },
+    { icon: MousePointerClick, title: "Primary CTA", desc: "Encourage action with a strong call-to-action." },
+    { icon: Linkedin, title: "Social Media Post", desc: "Ready-to-use content designed for engagement." },
+    { icon: Mail, title: "Email Copy", desc: "Professional email content tailored to your audience." },
+    { icon: Lightbulb, title: "Creative Suggestions", desc: "Visual concepts and creative direction to support execution." },
   ];
   return (
     <section className="py-20">
@@ -120,13 +114,27 @@ function GeneratorSection() {
             Generate your campaign
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Answer a few questions in the chat below. Free during beta — no credit card required.
+            Answer a few questions in the chat below.
           </p>
         </div>
 
         <div className="mx-auto mt-10 max-w-3xl">
           <TypebotEmbed />
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ───────────── About This Project ───────────── */
+function AboutSection() {
+  return (
+    <section className="border-t border-border bg-surface py-16">
+      <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">About This Project</h2>
+        <p className="mt-4 text-muted-foreground">
+          Marketing AI Lab was created by Suzane Bajester as a personal project exploring how AI can help marketers move from a blank page to a complete campaign faster. Built with Lovable, Typebot and OpenAI.
+        </p>
       </div>
     </section>
   );
