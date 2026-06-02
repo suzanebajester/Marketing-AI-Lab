@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  Sparkles, ArrowRight, Users, Megaphone, MousePointerClick, Linkedin, Mail, Lightbulb,
+  Sparkles, ArrowRight, Users, Megaphone, MousePointerClick, Linkedin, Mail, Lightbulb, Github,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
