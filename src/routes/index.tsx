@@ -35,6 +35,7 @@ function Landing() {
       <Hero />
       <WhatYouGet />
       <GeneratorSection />
+      <AboutSection />
     </div>
   );
 }
