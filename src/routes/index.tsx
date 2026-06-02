@@ -69,12 +69,12 @@ function Hero() {
 /* ───────────── What You Get ───────────── */
 function WhatYouGet() {
   const cards = [
-    { icon: Users, title: "Buyer Persona", desc: "Role-based persona with goals, challenges and motivations." },
-    { icon: Megaphone, title: "Campaign Headline", desc: "A campaign-ready headline aligned with your objective." },
-    { icon: MousePointerClick, title: "Primary CTA", desc: "A clear action designed to drive results." },
-    { icon: Linkedin, title: "Social Media Post", desc: "Platform-appropriate content tailored to your audience." },
-    { icon: Mail, title: "Email Copy", desc: "Subject line and complete email ready to customize." },
-    { icon: Lightbulb, title: "Creative Suggestions", desc: "Content format, visual ideas and engagement recommendations." },
+    { icon: Users, title: "Buyer Persona", desc: "Understand who you're targeting and what motivates them." },
+    { icon: Megaphone, title: "Campaign Messaging", desc: "Define a clear and compelling campaign direction." },
+    { icon: MousePointerClick, title: "Primary CTA", desc: "Encourage action with a strong call-to-action." },
+    { icon: Linkedin, title: "Social Media Post", desc: "Ready-to-use content designed for engagement." },
+    { icon: Mail, title: "Email Copy", desc: "Professional email content tailored to your audience." },
+    { icon: Lightbulb, title: "Creative Suggestions", desc: "Visual concepts and creative direction to support execution." },
   ];
   return (
     <section className="py-20">
