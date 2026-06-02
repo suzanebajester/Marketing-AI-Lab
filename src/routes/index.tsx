@@ -125,3 +125,17 @@ function GeneratorSection() {
     </section>
   );
 }
+
+/* ───────────── About This Project ───────────── */
+function AboutSection() {
+  return (
+    <section className="border-t border-border bg-surface py-16">
+      <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">About This Project</h2>
+        <p className="mt-4 text-muted-foreground">
+          Marketing AI Lab was created by Suzane Bajester as a personal project exploring how AI can help marketers move from a blank page to a complete campaign faster. Built with Lovable, Typebot and OpenAI.
+        </p>
+      </div>
+    </section>
+  );
+}
