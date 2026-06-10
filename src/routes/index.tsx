@@ -299,11 +299,6 @@ function OutputPreviewSection() {
           </PreviewCard>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <Button variant="hero" size="lg" onClick={() => generateStrategyPdf(sampleStrategy)}>
-            <Download className="h-4 w-4" /> Download Strategy Report (PDF)
-          </Button>
-        </div>
       </div>
     </section>
   );
