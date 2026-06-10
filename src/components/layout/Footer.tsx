@@ -38,7 +38,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <span className="text-[11px]">Marketing Operations • Digital Marketing • AI Enthusiast</span>
+          <span className="text-[11px]">Marketing Operations • Digital Marketing • AI</span>
         </div>
       </div>
     </footer>
