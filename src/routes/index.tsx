@@ -7,7 +7,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
 import { sampleStrategy } from "@/lib/sampleStrategy";
-import { generateStrategyPdf } from "@/lib/generateStrategyPdf";
 
 export const Route = createFileRoute("/")({
   head: () => ({
