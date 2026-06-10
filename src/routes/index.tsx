@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
-  TrendingUp, Check, X, Brain, Download, Briefcase, Building2, UserCheck,
+  TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
   Rocket, Handshake, Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
