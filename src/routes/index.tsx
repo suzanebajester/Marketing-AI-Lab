@@ -111,19 +111,6 @@ function GeneratorSection() {
         <div className="mx-auto mt-12 max-w-3xl">
           <TypebotEmbed />
         </div>
-        <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border bg-card p-6 text-center shadow-card">
-          <p className="text-sm text-muted-foreground">
-            Want to see what the final deliverable looks like? Download a sample strategy report.
-          </p>
-          <Button
-            variant="hero"
-            size="lg"
-            className="mt-4"
-            onClick={() => generateStrategyPdf(sampleStrategy)}
-          >
-            <Download className="h-4 w-4" /> Download Strategy Report (PDF)
-          </Button>
-        </div>
       </div>
     </section>
   );
