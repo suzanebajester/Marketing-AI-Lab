@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
-  TrendingUp, Check, X, Brain, Download, Briefcase, Building2, UserCheck,
+  TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
   Rocket, Handshake, Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
 import { sampleStrategy } from "@/lib/sampleStrategy";
-import { generateStrategyPdf } from "@/lib/generateStrategyPdf";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -110,19 +109,6 @@ function GeneratorSection() {
         </div>
         <div className="mx-auto mt-12 max-w-3xl">
           <TypebotEmbed />
-        </div>
-        <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border bg-card p-6 text-center shadow-card">
-          <p className="text-sm text-muted-foreground">
-            Want to see what the final deliverable looks like? Download a sample strategy report.
-          </p>
-          <Button
-            variant="hero"
-            size="lg"
-            className="mt-4"
-            onClick={() => generateStrategyPdf(sampleStrategy)}
-          >
-            <Download className="h-4 w-4" /> Download Strategy Report (PDF)
-          </Button>
         </div>
       </div>
     </section>
@@ -312,11 +298,6 @@ function OutputPreviewSection() {
           </PreviewCard>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <Button variant="hero" size="lg" onClick={() => generateStrategyPdf(sampleStrategy)}>
-            <Download className="h-4 w-4" /> Download Strategy Report (PDF)
-          </Button>
-        </div>
       </div>
     </section>
   );
