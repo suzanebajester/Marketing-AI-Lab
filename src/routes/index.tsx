@@ -39,8 +39,9 @@ function Landing() {
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
       // Only accept messages originating from Typebot
-      const origin = event.origin || "";
-      if (!/typebot\.(io|co)$/.test(new URL(origin).hostname || "")) return;
+      let hostname = "";
+      try { hostname = new URL(event.origin).hostname; } catch { return; }
+      if (!/(^|\.)typebot\.(io|co)$/.test(hostname)) return;
 
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
