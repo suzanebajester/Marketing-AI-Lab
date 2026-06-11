@@ -36,6 +36,39 @@ function scrollToGenerator() {
 }
 
 function Landing() {
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      // Only accept messages originating from Typebot
+      const origin = event.origin || "";
+      if (!/typebot\.(io|co)$/.test(new URL(origin).hostname || "")) return;
+
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+
+      // Typebot posts several event shapes. We look for completion-like signals.
+      const isCompletion =
+        payload.type === "typebot-completion" ||
+        payload.type === "completion" ||
+        payload.event === "completed" ||
+        payload.completed === true ||
+        (payload.answers && (payload.completed || payload.type === "typebot-answers"));
+
+      if (!isCompletion) return;
+
+      const strategy = buildStrategyFromAnswers(payload.answers ?? payload.data ?? payload);
+      try {
+        generateStrategyPdf(strategy);
+        toast.success("Your strategy report is ready — downloading PDF…");
+      } catch (err) {
+        console.error("Failed to generate PDF:", err);
+        toast.error("Could not generate the PDF report.");
+      }
+    }
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   return (
     <div>
       <Hero />
@@ -47,6 +80,27 @@ function Landing() {
       <AboutSection />
     </div>
   );
+}
+
+/**
+ * Merge Typebot answers onto the sample strategy. Any field the bot didn't
+ * provide falls back to the sample so the PDF always renders a complete report.
+ */
+function buildStrategyFromAnswers(answers: Record<string, unknown> = {}): SampleStrategy {
+  const get = (k: string) => (typeof answers[k] === "string" ? (answers[k] as string) : undefined);
+  return {
+    ...sampleStrategy,
+    executiveSummary: {
+      ...sampleStrategy.executiveSummary,
+      goal: get("goal") ?? sampleStrategy.executiveSummary.goal,
+      audience: get("audience") ?? sampleStrategy.executiveSummary.audience,
+      primaryChannel: get("primaryChannel") ?? sampleStrategy.executiveSummary.primaryChannel,
+      budget: get("budget") ?? sampleStrategy.executiveSummary.budget,
+      forecast: get("forecast") ?? sampleStrategy.executiveSummary.forecast,
+    },
+    headline: get("headline") ?? sampleStrategy.headline,
+    cta: get("cta") ?? sampleStrategy.cta,
+  };
 }
 
 /* ───────────── Hero ───────────── */
