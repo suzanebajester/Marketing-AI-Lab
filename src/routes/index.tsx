@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
   TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
-  Rocket, Handshake, Target,
+  Rocket, Handshake, Target, Presentation,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
 import { sampleStrategy, type SampleStrategy } from "@/lib/sampleStrategy";
-import { generateStrategyPdf } from "@/lib/generateStrategyPdf";
+import { PresentationView } from "@/components/PresentationView";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,9 +36,12 @@ function scrollToGenerator() {
 }
 
 function Landing() {
+  const [strategy, setStrategy] = useState<SampleStrategy>(sampleStrategy);
+  const [presenting, setPresenting] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
+
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
-      // Only accept messages originating from Typebot
       let hostname = "";
       try { hostname = new URL(event.origin).hostname; } catch { return; }
       if (!/(^|\.)typebot\.(io|co)$/.test(hostname)) return;
@@ -46,7 +49,6 @@ function Landing() {
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
 
-      // Typebot posts several event shapes. We look for completion-like signals.
       const isCompletion =
         payload.type === "typebot-completion" ||
         payload.type === "completion" ||
@@ -56,14 +58,11 @@ function Landing() {
 
       if (!isCompletion) return;
 
-      const strategy = buildStrategyFromAnswers(payload.answers ?? payload.data ?? payload);
-      try {
-        generateStrategyPdf(strategy);
-        toast.success("Your strategy report is ready — downloading PDF…");
-      } catch (err) {
-        console.error("Failed to generate PDF:", err);
-        toast.error("Could not generate the PDF report.");
-      }
+      const next = buildStrategyFromAnswers(payload.answers ?? payload.data ?? payload);
+      setStrategy(next);
+      setHasGenerated(true);
+      toast.success("Your strategy is ready — open the presentation to view it.");
+      document.getElementById("presentation-cta")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     window.addEventListener("message", handleMessage);
@@ -74,12 +73,39 @@ function Landing() {
     <div>
       <Hero />
       <GeneratorSection />
+      <PresentationCta hasGenerated={hasGenerated} onOpen={() => setPresenting(true)} />
       <WhatYouReceive />
       <DifferentiatorSection />
       <OutputPreviewSection />
       <WhoIsItForSection />
       <AboutSection />
+      <PresentationView strategy={strategy} open={presenting} onClose={() => setPresenting(false)} />
     </div>
+  );
+}
+
+function PresentationCta({ hasGenerated, onOpen }: { hasGenerated: boolean; onOpen: () => void }) {
+  return (
+    <section id="presentation-cta" className="border-y border-border bg-gradient-soft py-16">
+      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-3 py-1 text-xs font-medium">
+          <Presentation className="h-3 w-3 text-primary" /> Stakeholder-Ready Deck
+        </div>
+        <h2 className="mt-4 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          {hasGenerated ? "Your strategy is ready" : "Preview a sample strategy presentation"}
+        </h2>
+        <p className="mt-3 text-muted-foreground">
+          {hasGenerated
+            ? "Open your AI-generated strategy as a full-screen presentation, ready to share with your team."
+            : "See how your generated strategy will look as a client-ready slide deck."}
+        </p>
+        <div className="mt-6">
+          <Button variant="hero" size="lg" onClick={onOpen}>
+            <Presentation className="h-4 w-4" /> View Presentation
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }
 
