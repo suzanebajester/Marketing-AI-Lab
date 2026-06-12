@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
   TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
-  Rocket, Handshake, Target,
+  Rocket, Handshake, Target, Presentation,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
 import { sampleStrategy, type SampleStrategy } from "@/lib/sampleStrategy";
-import { generateStrategyPdf } from "@/lib/generateStrategyPdf";
+import { PresentationView } from "@/components/PresentationView";
 
 export const Route = createFileRoute("/")({
   head: () => ({
