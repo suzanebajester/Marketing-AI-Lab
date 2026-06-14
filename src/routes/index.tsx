@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
   TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TypebotEmbed } from "@/components/TypebotEmbed";
 import { sampleStrategy, type SampleStrategy } from "@/lib/sampleStrategy";
-import { generateStrategyPdf } from "@/lib/generateStrategyPdf";
+import { StrategySlides } from "@/components/StrategySlides";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,9 +36,10 @@ function scrollToGenerator() {
 }
 
 function Landing() {
+  const [strategyData, setStrategyData] = useState<SampleStrategy | null>(null);
+
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
-      // Only accept messages originating from Typebot
       let hostname = "";
       try { hostname = new URL(event.origin).hostname; } catch { return; }
       if (!/(^|\.)typebot\.(io|co)$/.test(hostname)) return;
@@ -46,7 +47,6 @@ function Landing() {
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
 
-      // Typebot posts several event shapes. We look for completion-like signals.
       const isCompletion =
         payload.type === "typebot-completion" ||
         payload.type === "completion" ||
@@ -57,13 +57,11 @@ function Landing() {
       if (!isCompletion) return;
 
       const strategy = buildStrategyFromAnswers(payload.answers ?? payload.data ?? payload);
-      try {
-        generateStrategyPdf(strategy);
-        toast.success("Your strategy report is ready — downloading PDF…");
-      } catch (err) {
-        console.error("Failed to generate PDF:", err);
-        toast.error("Could not generate the PDF report.");
-      }
+      setStrategyData(strategy);
+      toast.success("Your strategy is ready — scroll down to view it.");
+      setTimeout(() => {
+        document.getElementById("strategy-slides")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     }
 
     window.addEventListener("message", handleMessage);
@@ -74,6 +72,23 @@ function Landing() {
     <div>
       <Hero />
       <GeneratorSection />
+      {strategyData && (
+        <section id="strategy-slides" className="bg-gradient-soft py-24 lg:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                Your Marketing Strategy
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                A stakeholder-ready deck generated from your answers.
+              </p>
+            </div>
+            <div className="mt-12">
+              <StrategySlides strategy={strategyData} />
+            </div>
+          </div>
+        </section>
+      )}
       <WhatYouReceive />
       <DifferentiatorSection />
       <OutputPreviewSection />
