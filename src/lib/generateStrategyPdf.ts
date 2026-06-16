@@ -214,11 +214,11 @@ export function generateStrategyPdf(s: SampleStrategy) {
     setColor(COLORS.text);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text(c.name, M, y);
+    doc.text(c.name || "", M, y);
     setColor(COLORS.primary);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.text(c.type.toUpperCase(), W - M, y, { align: "right" });
+    doc.text((c.type || "Organic").toUpperCase(), W - M, y, { align: "right" });
     y += 18;
   }
 
@@ -260,10 +260,15 @@ export function generateStrategyPdf(s: SampleStrategy) {
     setColor(COLORS.text);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10.5);
-    doc.text(f.channel, col[0], y);
-    doc.text(f.reach, col[1], y);
-    doc.text(f.clicks, col[2], y);
-    doc.text(f.leads, col[3], y);
+    doc.text(f.channel || "", col[0], y);
+    
+    const reachVal = f.reach || f.metrics?.Reach || f.metrics?.reach || "—";
+    const clicksVal = f.clicks || f.metrics?.Clicks || f.metrics?.clicks || "—";
+    const leadsVal = f.leads || f.metrics?.Leads || f.metrics?.leads || "—";
+    
+    doc.text(reachVal, col[1], y);
+    doc.text(clicksVal, col[2], y);
+    doc.text(leadsVal, col[3], y);
     y += 18;
   }
 

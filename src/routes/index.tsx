@@ -102,7 +102,220 @@ function Landing() {
  * Merge Typebot answers onto the sample strategy. Any field the bot didn't
  * provide falls back to the sample so the PDF always renders a complete report.
  */
+function tryParseTypebotJson(answers: Record<string, unknown>): any | null {
+  for (const key in answers) {
+    const value = answers[key];
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      let jsonStr = trimmed;
+      if (jsonStr.startsWith("```")) {
+        const matches = jsonStr.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+        if (matches && matches[1]) {
+          jsonStr = matches[1].trim();
+        }
+      }
+      
+      if (jsonStr.startsWith("{") && jsonStr.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(jsonStr);
+          if (parsed.executive_summary || parsed.executiveSummary || parsed.buyer_persona || parsed.persona) {
+            console.log("Successfully found and parsed campaign JSON from Typebot key:", key);
+            return parsed;
+          }
+        } catch (e) {
+          // ignore and keep looking
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function mapTypebotJsonToStrategy(parsed: any): SampleStrategy {
+  const getField = (obj: any, camelKey: string, snakeKey: string) => {
+    if (!obj) return undefined;
+    return obj[camelKey] !== undefined ? obj[camelKey] : obj[snakeKey];
+  };
+
+  const exec = getField(parsed, "executiveSummary", "executive_summary") || {};
+  const web = getField(parsed, "websiteInsights", "website_insights");
+  const pers = getField(parsed, "buyerPersona", "buyer_persona") || getField(parsed, "persona", "persona") || {};
+  const chStrat = getField(parsed, "channelStrategy", "channel_strategy") || {};
+  
+  const mapChannels = (channels: any[]): { name: string; type: "Paid" | "Owned" | "Organic"; role?: string; whyFit?: string }[] => {
+    if (!Array.isArray(channels)) return [];
+    return channels.map(c => {
+      const name = c.channel || c.name || "";
+      let type: "Paid" | "Owned" | "Organic" = "Organic";
+      if (c.type === "Paid" || c.type === "Owned" || c.type === "Organic") {
+        type = c.type;
+      } else {
+        const lowerName = name.toLowerCase();
+        if (lowerName.includes("ads") || lowerName.includes("paid") || lowerName.includes("google") || lowerName.includes("meta") || lowerName.includes("facebook") || lowerName.includes("instagram") || lowerName.includes("linkedin")) {
+          type = "Paid";
+        } else if (lowerName.includes("email") || lowerName.includes("website") || lowerName.includes("landing") || lowerName.includes("newsletter")) {
+          type = "Owned";
+        }
+      }
+      return {
+        name,
+        type,
+        role: c.role || "",
+        whyFit: c.why_fit || c.whyFit || ""
+      };
+    });
+  };
+
+  const paidChannels = mapChannels(getField(chStrat, "paidChannels", "paid_channels"));
+  const ownedChannels = mapChannels(getField(chStrat, "ownedChannels", "owned_channels"));
+  const organicChannels = mapChannels(getField(chStrat, "organicChannels", "organic_channels"));
+  
+  const combinedChannels = [...paidChannels, ...ownedChannels, ...organicChannels];
+  if (combinedChannels.length === 0 && Array.isArray(chStrat)) {
+    chStrat.forEach((c: any) => {
+      combinedChannels.push({
+        name: c.name || c.channel || "",
+        type: c.type || "Organic",
+        role: c.role || "",
+        whyFit: c.whyFit || c.why_fit || ""
+      });
+    });
+  }
+
+  const rawBudget = getField(parsed, "budgetAllocation", "budget_allocation");
+  const budgetAlloc = Array.isArray(rawBudget) ? rawBudget.map((b: any) => {
+    let pct = 0;
+    if (typeof b.percentage === "number") {
+      pct = b.percentage;
+    } else if (typeof b.percentage === "string") {
+      pct = parseInt(b.percentage.replace(/%/g, "")) || 0;
+    } else if (typeof b.pct === "number") {
+      pct = b.pct;
+    } else if (typeof b.pct === "string") {
+      pct = parseInt(b.pct.replace(/%/g, "")) || 0;
+    }
+    return {
+      channel: b.channel || "",
+      pct,
+      estimatedBudget: b.estimated_budget_share || b.estimatedBudget || "",
+      purpose: b.purpose || ""
+    };
+  }) : [];
+
+  const rawForecast = getField(parsed, "channelForecast", "channel_forecast");
+  const channelForecast = Array.isArray(rawForecast) ? rawForecast.map((f: any) => {
+    return {
+      channel: f.channel || "",
+      metrics: f.metrics || {}
+    };
+  }) : [];
+
+  const rawPriorities = getField(parsed, "recommendedPriorities", "recommended_priorities") || {};
+  const priorities = {
+    high: getField(rawPriorities, "high", "high_priority") || [],
+    medium: getField(rawPriorities, "medium", "medium_priority") || [],
+    low: getField(rawPriorities, "low", "low_priority") || []
+  };
+
+  const rawNext = getField(parsed, "nextSteps", "next_steps") || {};
+  const nextSteps = {
+    week1: getField(rawNext, "week1", "week_1") || "",
+    week2: getField(rawNext, "week2", "week_2") || "",
+    week3: getField(rawNext, "week3", "week_3") || "",
+    week4: getField(rawNext, "week4", "week_4") || ""
+  };
+
+  const rawCreative = getField(parsed, "creativeDirection", "creative_direction");
+  const creativeDirection: string[] = [];
+  let creativeDetail: any = undefined;
+  if (rawCreative) {
+    if (Array.isArray(rawCreative)) {
+      creativeDirection.push(...rawCreative);
+    } else if (typeof rawCreative === "object") {
+      creativeDetail = {
+        recommendedFormat: getField(rawCreative, "recommendedFormat", "recommended_format") || "",
+        visualAngle: getField(rawCreative, "visualAngle", "visual_angle") || "",
+        visualStyle: getField(rawCreative, "visualStyle", "visual_style") || "",
+        contentStructure: getField(rawCreative, "contentStructure", "content_structure") || []
+      };
+      if (creativeDetail.recommendedFormat) creativeDirection.push(`Formato: ${creativeDetail.recommendedFormat}`);
+      if (creativeDetail.visualAngle) creativeDirection.push(`Ângulo Visual: ${creativeDetail.visualAngle}`);
+      if (creativeDetail.visualStyle) creativeDirection.push(`Estilo Visual: ${creativeDetail.visualStyle}`);
+    }
+  }
+
+  const rawAssets = getField(parsed, "campaignAssets", "campaign_assets");
+  const campaignAssetsList: { type: string; content: string }[] = [];
+  if (rawAssets) {
+    const social = getField(rawAssets, "socialPost", "social_post");
+    if (social) {
+      campaignAssetsList.push({
+        type: `Social Post (${social.platform || "Instagram"})`,
+        content: social.copy || social.content || ""
+      });
+    }
+    const emailObj = getField(rawAssets, "email", "email");
+    if (emailObj) {
+      campaignAssetsList.push({
+        type: "Email Copy",
+        content: `Subject: ${emailObj.subject_line || emailObj.subject || ""}\n\n${emailObj.body || ""}`
+      });
+    }
+  }
+
+  const fSummary = getField(parsed, "forecastSummary", "forecast_summary") || {};
+
+  return {
+    executiveSummary: {
+      goal: getField(exec, "campaignGoal", "campaign_goal") || getField(exec, "goal", "goal") || "",
+      audience: getField(exec, "targetAudience", "target_audience") || getField(exec, "audience", "audience") || "",
+      productService: getField(exec, "productService", "product_service") || "",
+      primaryChannel: getField(exec, "primaryChannel", "primary_channel") || "",
+      budget: getField(exec, "monthlyBudget", "monthly_budget") || getField(exec, "budget", "budget") || "",
+      forecast: getField(exec, "forecastHighlight", "forecast_highlight") || getField(exec, "forecast", "forecast") || "",
+      forecastHighlight: getField(exec, "forecastHighlight", "forecast_highlight") || "",
+      campaignTimeframe: getField(exec, "campaignTimeframe", "campaign_timeframe") || ""
+    },
+    websiteInsights: web && (getField(web, "detectedOffer", "detected_offer") || getField(web, "keyDifferentiators", "key_differentiators")) ? {
+      detectedOffer: getField(web, "detectedOffer", "detected_offer") || "",
+      keyDifferentiators: getField(web, "keyDifferentiators", "key_differentiators") || [],
+      promotionalHooks: getField(web, "promotionalHooks", "promotional_hooks") || [],
+      messagingAngle: getField(web, "messagingAngle", "messaging_angle") || ""
+    } : undefined,
+    persona: {
+      title: getField(pers, "personaName", "persona_name") || getField(pers, "title", "title") || "",
+      jobTitle: getField(pers, "jobTitle", "job_title") || "",
+      goals: getField(pers, "goals", "main_goals") || getField(pers, "goals", "goals") || [],
+      challenges: getField(pers, "challenges", "main_challenges") || getField(pers, "challenges", "challenges") || [],
+      keyBuyingFactors: getField(pers, "keyBuyingFactors", "key_buying_factors") || [],
+      decisionInfluence: getField(pers, "decisionInfluence", "decision_influence") || ""
+    },
+    headline: parsed.campaign_headline || parsed.campaignHeadline || parsed.headline || "",
+    cta: parsed.primary_cta || parsed.primaryCta || parsed.cta || "",
+    channelStrategy: combinedChannels.length > 0 ? combinedChannels : sampleStrategy.channelStrategy,
+    budgetAllocation: budgetAlloc,
+    channelForecast: channelForecast,
+    campaignForecastSummary: parsed.campaignForecastSummary || getField(fSummary, "totalCampaignResults", "total_campaign_results") || "",
+    forecastSummary: {
+      monthlyResults: getField(fSummary, "monthlyResults", "monthly_results") || "",
+      totalCampaignResults: getField(fSummary, "totalCampaignResults", "total_campaign_results") || "",
+      averagePrimaryMetric: getField(fSummary, "averagePrimaryMetric", "average_primary_metric") || "",
+      mainSuccessMetric: getField(fSummary, "mainSuccessMetric", "main_success_metric") || ""
+    },
+    creativeDirection: creativeDirection,
+    creativeDirectionDetail: creativeDetail,
+    recommendedPriorities: priorities,
+    nextSteps: nextSteps,
+    campaignAssets: campaignAssetsList
+  };
+}
+
 function buildStrategyFromAnswers(answers: Record<string, unknown> = {}): SampleStrategy {
+  const parsedJson = tryParseTypebotJson(answers);
+  if (parsedJson) {
+    return mapTypebotJsonToStrategy(parsedJson);
+  }
+
   const get = (k: string) => (typeof answers[k] === "string" ? (answers[k] as string) : undefined);
   return {
     ...sampleStrategy,
