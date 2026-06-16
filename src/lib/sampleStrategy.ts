@@ -1,3 +1,5 @@
+export type Priority = "High" | "Medium" | "Low";
+
 export type SampleStrategy = {
   executiveSummary: {
     goal: string;
@@ -5,6 +7,12 @@ export type SampleStrategy = {
     primaryChannel: string;
     budget: string;
     forecast: string;
+  };
+  websiteInsights?: {
+    url?: string;
+    positioning: string;
+    strengths: string[];
+    opportunities: string[];
   };
   persona: {
     title: string;
@@ -19,6 +27,8 @@ export type SampleStrategy = {
   campaignForecastSummary: string;
   creativeDirection: string[];
   campaignAssets: { type: string; content: string }[];
+  priorities?: { title: string; rationale: string; level: Priority }[];
+  nextSteps?: { week: string; title: string; description: string }[];
 };
 
 export const sampleStrategy: SampleStrategy = {
@@ -28,6 +38,18 @@ export const sampleStrategy: SampleStrategy = {
     primaryChannel: "LinkedIn Ads",
     budget: "$2,000–$5,000",
     forecast: "50–120 Qualified Leads",
+  },
+  websiteInsights: {
+    url: "calibrationpro.example",
+    positioning: "Audit-ready calibration software for regulated industries.",
+    strengths: [
+      "Clear compliance-focused value proposition",
+      "Strong proof points from Tier-1 pharma customers",
+    ],
+    opportunities: [
+      "Thin top-of-funnel content for QA personas",
+      "No retargeting layer on case study traffic",
+    ],
   },
   persona: {
     title: "Quality Manager",
@@ -57,16 +79,18 @@ export const sampleStrategy: SampleStrategy = {
     "Case Study: 30% faster audit prep at a Tier-1 pharma plant",
     "Industry Guide: Calibration Compliance Playbook 2026",
   ],
-  campaignAssets: [
-    {
-      type: "LinkedIn Post",
-      content:
-        "Audits don't fail because of bad people. They fail because of unclear calibration records.\n\nWe put together the playbook used by 40+ pharma QA leads to cut audit prep time by 30%. Free, no email gate.",
-    },
-    {
-      type: "Email",
-      content:
-        "Subject: The calibration gap most QA teams miss\n\nHi {{first_name}}, audits rarely fail on the floor — they fail in the paperwork. Here's the 1-page checklist our pharma customers use before every inspection.",
-    },
+  campaignAssets: [],
+  priorities: [
+    { title: "Launch LinkedIn Ads to QA decision-makers", rationale: "Highest-intent channel for the target persona.", level: "High" },
+    { title: "Publish Calibration Compliance Playbook", rationale: "Anchor asset for nurture and paid traffic.", level: "High" },
+    { title: "Stand up retargeting on case study traffic", rationale: "Captures warm visitors already evaluating solutions.", level: "Medium" },
+    { title: "Test Google Ads on compliance keywords", rationale: "Validates demand signal beyond LinkedIn.", level: "Medium" },
+    { title: "Repurpose case study into short-form video", rationale: "Extends reach with low incremental cost.", level: "Low" },
+  ],
+  nextSteps: [
+    { week: "Week 1", title: "Foundations", description: "Finalize messaging, build LinkedIn audiences, ship landing page." },
+    { week: "Week 2", title: "Launch", description: "Activate LinkedIn Ads + Google Ads with 3 creative variants each." },
+    { week: "Week 3", title: "Optimize", description: "Cut underperforming creative, double down on top CPL ad sets." },
+    { week: "Week 4", title: "Scale & Report", description: "Increase budget on winners, deliver stakeholder readout." },
   ],
 };
