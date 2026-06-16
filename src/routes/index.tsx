@@ -46,7 +46,25 @@ function Landing() {
 
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
+      
+      console.log("Marketing AI Lab received Typebot payload:", payload);
 
+      // 1. Check if we can parse the strategy JSON immediately from any message
+      const answersObj = payload.answers ?? payload.data ?? payload;
+      const parsedJson = tryParseTypebotJson(answersObj);
+      
+      if (parsedJson) {
+        console.log("Found valid JSON in payload, mapping to strategy...");
+        const strategy = mapTypebotJsonToStrategy(parsedJson);
+        setStrategyData(strategy);
+        toast.success("Sua estratégia está pronta! Role para baixo para visualizar.");
+        setTimeout(() => {
+          document.getElementById("strategy-slides")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+        return; // Success, stop processing this message
+      }
+
+      // 2. Fallback: only trigger on completion events if no JSON was parsed yet
       const isCompletion =
         payload.type === "typebot-completion" ||
         payload.type === "completion" ||
@@ -56,9 +74,10 @@ function Landing() {
 
       if (!isCompletion) return;
 
-      const strategy = buildStrategyFromAnswers(payload.answers ?? payload.data ?? payload);
+      console.log("Completion event received from Typebot, loading fallback strategy...");
+      const strategy = buildStrategyFromAnswers(answersObj);
       setStrategyData(strategy);
-      toast.success("Your strategy is ready — scroll down to view it.");
+      toast.success("Sua estratégia está pronta! Role para baixo para visualizar.");
       setTimeout(() => {
         document.getElementById("strategy-slides")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
