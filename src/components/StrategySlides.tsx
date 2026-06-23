@@ -162,7 +162,7 @@ export function StrategySlides({ strategy }: Props) {
             width: 100% !important;
             max-w: none !important;
             margin: 0 !important;
-            padding: 3rem !important;
+            padding: 1.5rem 2rem !important;
             box-sizing: border-box !important;
             height: 100vh !important;
             page-break-inside: avoid !important;
@@ -172,6 +172,41 @@ export function StrategySlides({ strategy }: Props) {
           .slide-page:not(:last-child) {
             page-break-after: always !important;
             break-after: page !important;
+          }
+          
+          /* Print-specific downscaling of typography and padding to prevent overflow */
+          .slide-page .text-[10px] { font-size: 8px !important; }
+          .slide-page .text-[9px] { font-size: 8px !important; }
+          .slide-page .text-xs { font-size: 9px !important; }
+          .slide-page .text-sm { font-size: 10px !important; }
+          .slide-page .text-base { font-size: 11px !important; }
+          .slide-page .text-lg { font-size: 12px !important; }
+          .slide-page .text-xl { font-size: 14px !important; }
+          .slide-page .text-2xl { font-size: 16px !important; }
+          .slide-page .text-3xl { font-size: 18px !important; }
+          .slide-page .text-4xl { font-size: 20px !important; }
+          
+          .slide-page .p-4 { padding: 0.75rem !important; }
+          .slide-page .p-6 { padding: 1rem !important; }
+          .slide-page .py-12 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+          .slide-page .py-4 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+          .slide-page .my-2 { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
+          .slide-page .mt-12 { margin-top: 0.5rem !important; }
+          .slide-page .mt-6 { margin-top: 0.25rem !important; }
+          .slide-page .mt-3 { margin-top: 0.25rem !important; }
+          .slide-page .gap-3 { gap: 0.5rem !important; }
+          .slide-page .gap-5 { gap: 0.75rem !important; }
+          .slide-page .mb-6 { margin-bottom: 0.5rem !important; }
+          .slide-page .mt-14 { margin-top: 0.75rem !important; }
+          
+          /* Compress header and footer items */
+          .slide-page > div:first-child {
+            margin-bottom: 0.5rem !important;
+            padding-bottom: 0.25rem !important;
+          }
+          .slide-page > div:last-child {
+            margin-top: 0.5rem !important;
+            padding-top: 0.25rem !important;
           }
         }
       `}</style>
