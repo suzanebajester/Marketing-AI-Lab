@@ -128,6 +128,54 @@ export function StrategySlides({ strategy }: Props) {
           </section>
         ))}
       </div>
+
+      <style>{`
+        @media print {
+          @page { size: A4 landscape; margin: 0; }
+          body { background: white !important; }
+          
+          /* Hide all other sections on the page */
+          body > div > div > *:not(#strategy-slides) {
+            display: none !important;
+          }
+          section:not(#strategy-slides) {
+            display: none !important;
+          }
+          
+          /* Reset container padding/margin for print */
+          #strategy-slides {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: white !important;
+            max-w: none !important;
+            width: 100% !important;
+          }
+          #strategy-slides > div {
+            max-w: none !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide section title and description */
+          #strategy-slides > div > div:first-child {
+            display: none !important;
+          }
+          
+          .no-print {
+            display: none !important;
+          }
+          
+          .slide-page {
+            page-break-after: always !important;
+            break-after: page !important;
+            width: 100% !important;
+            max-w: none !important;
+            margin: 0 !important;
+            padding: 3rem !important;
+            box-sizing: border-box !important;
+            height: 100vh !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

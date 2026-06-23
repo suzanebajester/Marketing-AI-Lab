@@ -91,7 +91,7 @@ function Landing() {
     <div>
       <Hero />
       <GeneratorSection />
-      {strategyData && (
+      {strategyData ? (
         <section id="strategy-slides" className="bg-gradient-soft py-24 lg:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
@@ -107,10 +107,12 @@ function Landing() {
             </div>
           </div>
         </section>
+      ) : (
+        <>
+          <DifferentiatorSection />
+          <OutputPreviewSection />
+        </>
       )}
-      <WhatYouReceive />
-      <DifferentiatorSection />
-      <OutputPreviewSection />
       <WhoIsItForSection />
       <AboutSection />
     </div>
@@ -420,45 +422,6 @@ function GeneratorSection() {
   );
 }
 
-/* ───────────── What You'll Receive ───────────── */
-function WhatYouReceive() {
-  const cards = [
-    { icon: FileText, title: "Executive Campaign Summary", desc: "Stakeholder-ready overview of goals, audience and recommendations." },
-    { icon: Users, title: "Buyer Persona", desc: "Understand motivations, challenges and decision criteria." },
-    { icon: Network, title: "Channel Strategy", desc: "Paid, owned and organic channel recommendations." },
-    { icon: PieChart, title: "Budget Allocation", desc: "Suggested investment by channel." },
-    { icon: TrendingUp, title: "Performance Forecast", desc: "Estimated reach, traffic, leads or awareness outcomes." },
-    { icon: Lightbulb, title: "Creative Direction", desc: "Campaign concepts and content recommendations." },
-    { icon: Megaphone, title: "Campaign Assets", desc: "Ready-to-use LinkedIn and email examples." },
-  ];
-  return (
-    <section className="py-24 lg:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            What you'll receive
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            One brief. A complete, stakeholder-ready marketing strategy.
-          </p>
-        </div>
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated hover:-translate-y-0.5">
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-hero text-primary-foreground shadow-glow">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-display text-base font-semibold">{title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ───────────── Strategic Differentiator ───────────── */
 function DifferentiatorSection() {
