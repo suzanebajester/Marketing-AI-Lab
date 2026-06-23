@@ -57,9 +57,9 @@ function Landing() {
         console.log("Found valid JSON in payload, mapping to strategy...");
         const strategy = mapTypebotJsonToStrategy(parsedJson);
         setStrategyData(strategy);
-        toast.success("Sua estratégia está pronta! Role para baixo para visualizar.");
+        toast.success("Sua estratégia está pronta!");
         setTimeout(() => {
-          document.getElementById("strategy-slides")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
         return; // Success, stop processing this message
       }
@@ -77,9 +77,9 @@ function Landing() {
       console.log("Completion event received from Typebot, loading fallback strategy...");
       const strategy = buildStrategyFromAnswers(answersObj);
       setStrategyData(strategy);
-      toast.success("Sua estratégia está pronta! Role para baixo para visualizar.");
+      toast.success("Sua estratégia está pronta!");
       setTimeout(() => {
-        document.getElementById("strategy-slides")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }, 100);
     }
 
@@ -89,8 +89,12 @@ function Landing() {
 
   return (
     <div>
-      <Hero />
-      <GeneratorSection />
+      {!strategyData ? (
+        <div className="no-print">
+          <Hero />
+          <GeneratorSection />
+        </div>
+      ) : null}
       {strategyData ? (
         <section id="strategy-slides" className="bg-gradient-soft py-24 lg:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -108,13 +112,15 @@ function Landing() {
           </div>
         </section>
       ) : (
-        <>
+        <div className="no-print">
           <DifferentiatorSection />
           <OutputPreviewSection />
-        </>
+        </div>
       )}
-      <WhoIsItForSection />
-      <AboutSection />
+      <div className="no-print">
+        <WhoIsItForSection />
+        <AboutSection />
+      </div>
     </div>
   );
 }

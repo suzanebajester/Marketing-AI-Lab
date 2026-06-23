@@ -88,9 +88,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
-        <Navbar />
+        <div className="no-print">
+          <Navbar />
+        </div>
         <main className="flex-1"><Outlet /></main>
-        <Footer />
+        <div className="no-print">
+          <Footer />
+        </div>
         <Toaster richColors position="top-right" />
       </div>
     </QueryClientProvider>

@@ -134,11 +134,9 @@ export function StrategySlides({ strategy }: Props) {
           @page { size: A4 landscape; margin: 0; }
           body { background: white !important; }
           
-          /* Hide all other sections on the page */
-          body > div > div > *:not(#strategy-slides) {
-            display: none !important;
-          }
-          section:not(#strategy-slides) {
+          /* Hide all elements with no-print class */
+          .no-print,
+          .no-print * {
             display: none !important;
           }
           
@@ -157,10 +155,6 @@ export function StrategySlides({ strategy }: Props) {
           
           /* Hide section title and description */
           #strategy-slides > div > div:first-child {
-            display: none !important;
-          }
-          
-          .no-print {
             display: none !important;
           }
           
