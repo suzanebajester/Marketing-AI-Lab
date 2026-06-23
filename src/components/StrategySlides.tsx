@@ -107,9 +107,9 @@ export function StrategySlides({ strategy }: Props) {
       </div>
 
       {/* Print view: list all slides vertically, hide controls */}
-      <div className="hidden print:block space-y-12">
+      <div className="hidden print:block">
         {slides.map((slide, i) => (
-          <section key={i} className="slide-page w-full aspect-[16/9] border-b border-slate-200 py-12 flex flex-col justify-between" style={{ pageBreakAfter: "always", breakAfter: "page" }}>
+          <section key={i} className="slide-page w-full aspect-[16/9] border-b border-slate-200 py-12 flex flex-col justify-between">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-6">
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
                 {slide.kicker}
@@ -159,14 +159,19 @@ export function StrategySlides({ strategy }: Props) {
           }
           
           .slide-page {
-            page-break-after: always !important;
-            break-after: page !important;
             width: 100% !important;
             max-w: none !important;
             margin: 0 !important;
             padding: 3rem !important;
             box-sizing: border-box !important;
             height: 100vh !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          
+          .slide-page:not(:last-child) {
+            page-break-after: always !important;
+            break-after: page !important;
           }
         }
       `}</style>

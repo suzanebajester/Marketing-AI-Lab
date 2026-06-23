@@ -117,8 +117,12 @@ function Landing() {
           <OutputPreviewSection />
         </div>
       )}
+      {!strategyData && (
+        <div className="no-print">
+          <WhoIsItForSection />
+        </div>
+      )}
       <div className="no-print">
-        <WhoIsItForSection />
         <AboutSection />
       </div>
     </div>
