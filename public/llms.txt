@@ -1,0 +1,15 @@
+# Marketing AI Lab
+
+Marketing AI Lab is an AI-powered campaign and marketing strategy generator. It allows startup founders, marketing managers, agencies, and freelancers to turn a simple brief into a comprehensive marketing strategy deck including:
+
+- Executive Campaign Summary
+- Website Insights (if applicable)
+- Buyer Persona Profile
+- Omnichannel Channel Strategy
+- Budget Allocation
+- Performance Forecasts
+- Priorities and Action Plan
+- Next Steps / Implementation Timeline
+
+## Links
+- [Homepage](https://marketingailab.app/)
