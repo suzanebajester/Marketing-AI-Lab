@@ -18,11 +18,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Turn a simple brief into a complete marketing strategy. Get buyer personas, channel plans, budget allocation, performance forecasts and creative direction in minutes." },
       { property: "og:title", content: "Marketing AI Lab" },
       { property: "og:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
-      { property: "og:image", content: "https://marketingailab.app/og-image.png" },
+      { property: "og:image", content: "https://marketingailab.app/og-image-v2.png" },
       { property: "og:url", content: "https://marketingailab.app/" },
       { name: "twitter:title", content: "Marketing AI Lab" },
       { name: "twitter:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
-      { name: "twitter:image", content: "https://marketingailab.app/og-image.png" },
+      { name: "twitter:image", content: "https://marketingailab.app/og-image-v2.png" },
     ],
     links: [
       { rel: "canonical", href: "https://marketingailab.app/" },
