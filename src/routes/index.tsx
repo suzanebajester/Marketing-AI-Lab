@@ -18,11 +18,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Turn a simple brief into a complete marketing strategy. Get buyer personas, channel plans, budget allocation, performance forecasts and creative direction in minutes." },
       { property: "og:title", content: "Marketing AI Lab" },
       { property: "og:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de1ee971-29f4-4659-a342-599b85939247/id-preview-e44e50f8--bdc65a74-fdf9-4cce-9fbf-bfd4a83333e4.lovable.app-1780242951323.png" },
+      { property: "og:image", content: "https://marketingailab.app/og-image.png" },
       { property: "og:url", content: "https://marketingailab.app/" },
       { name: "twitter:title", content: "Marketing AI Lab" },
       { name: "twitter:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de1ee971-29f4-4659-a342-599b85939247/id-preview-e44e50f8--bdc65a74-fdf9-4cce-9fbf-bfd4a83333e4.lovable.app-1780242951323.png" },
+      { name: "twitter:image", content: "https://marketingailab.app/og-image.png" },
     ],
     links: [
       { rel: "canonical", href: "https://marketingailab.app/" },
