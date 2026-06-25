@@ -87,10 +87,12 @@
   },
   "overrides": {
     "dompurify": "^3.4.11",
-    "undici": "^7.28.0"
+    "undici": "^7.28.0",
+    "js-yaml": "^4.2.0"
   },
   "resolutions": {
     "dompurify": "^3.4.11",
-    "undici": "^7.28.0"
+    "undici": "^7.28.0",
+    "js-yaml": "^4.2.0"
   }
 }
