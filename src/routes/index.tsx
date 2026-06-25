@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Sparkles, ArrowRight, Users, Megaphone, Lightbulb, FileText, Network, PieChart,
   TrendingUp, Check, X, Brain, Briefcase, Building2, UserCheck,
-  Rocket, Handshake, Target,
+  Rocket, Handshake, Target, Globe, Calendar, AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -447,18 +447,18 @@ function DifferentiatorSection() {
         </div>
         <div className="mt-14 grid gap-4">
           {rows.map(({ from, to }) => (
-            <div key={from} className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
-              <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-muted-foreground">
-                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-muted">
+            <div key={from} className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr] group">
+              <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-muted-foreground transition-all duration-300 group-hover:border-slate-350">
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-muted transition-colors duration-300 group-hover:bg-slate-200">
                   <X className="h-4 w-4" />
                 </span>
                 <span className="text-sm font-medium line-through decoration-muted-foreground/40">{from}</span>
               </div>
               <div className="hidden items-center justify-center sm:flex">
-                <ArrowRight className="h-5 w-5 text-primary" />
+                <ArrowRight className="h-5 w-5 text-primary transition-transform duration-300 group-hover:translate-x-1" />
               </div>
-              <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-gradient-soft p-4 shadow-card">
-                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-hero text-primary-foreground shadow-glow">
+              <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-gradient-soft p-4 shadow-card transition-all duration-300 group-hover:border-primary/45 group-hover:shadow-glow">
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-hero text-primary-foreground shadow-glow transition-transform duration-500 group-hover:rotate-[360deg]">
                   <Check className="h-4 w-4" />
                 </span>
                 <span className="text-sm font-semibold text-foreground">{to}</span>
@@ -487,87 +487,355 @@ function OutputPreviewSection() {
         </div>
 
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {/* Executive Summary */}
-          <PreviewCard icon={FileText} label="Executive Summary" className="lg:col-span-2">
-            <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-              <Field label="Goal" value={s.executiveSummary.goal} />
-              <Field label="Audience" value={s.executiveSummary.audience} />
-              <Field label="Primary Channel" value={s.executiveSummary.primaryChannel} />
-              <Field label="Budget" value={s.executiveSummary.budget} />
-              <Field label="Forecast" value={s.executiveSummary.forecast} />
-            </dl>
+          {/* 1. Executive Summary */}
+          <PreviewCard icon={FileText} label="Executive Summary" className="lg:col-span-2 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between">
+              {/* Core Campaign Message banner */}
+              <div className="mb-4 p-3 bg-gradient-soft rounded-xl border border-primary/10 shadow-sm">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-primary">Core Campaign Message</div>
+                <p className="text-sm font-semibold text-foreground italic">"{s.headline}"</p>
+              </div>
+
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                <Field label="Goal" value={s.executiveSummary.goal} />
+                <Field label="Target Audience" value={s.executiveSummary.audience} />
+                <Field label="Product / Service" value={s.executiveSummary.productService || "General Offering"} />
+                <Field label="Primary Channel" value={s.executiveSummary.primaryChannel} />
+                <Field label="Monthly Budget" value={s.executiveSummary.budget} />
+                <Field label="Timeframe" value={s.executiveSummary.campaignTimeframe || "8 weeks"} />
+              </div>
+
+              <div className="mt-4 text-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
+                  CTA Hook: <span className="text-indigo-300 font-bold">{s.cta}</span>
+                </span>
+              </div>
+            </div>
           </PreviewCard>
 
-          {/* Persona */}
+          {/* 2. Website Insights */}
+          <PreviewCard icon={Globe} label="Website Insights" className="flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="rounded-xl border border-border bg-surface p-3 shadow-sm">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Detected Offering</div>
+                <p className="text-xs font-semibold text-foreground leading-relaxed">{s.websiteInsights?.detectedOffer}</p>
+              </div>
+              <div className="rounded-xl border border-primary/15 bg-accent/40 p-3 border-l-4 border-l-primary shadow-sm">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-primary mb-1">Messaging Angle</div>
+                <p className="text-xs text-foreground leading-relaxed font-semibold">{s.websiteInsights?.messagingAngle}</p>
+              </div>
+              <div>
+                <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Key Differentiators</div>
+                <ul className="space-y-1.5 text-xs">
+                  {s.websiteInsights?.keyDifferentiators?.map((diff, i) => (
+                    <li key={i} className="flex gap-2 items-start text-foreground font-medium">
+                      <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{diff}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </PreviewCard>
+
+          {/* 3. Buyer Persona */}
           <PreviewCard icon={Users} label="Buyer Persona">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-hero font-display text-sm font-bold text-primary-foreground">QM</div>
-              <div className="text-sm font-semibold">{s.persona.title}</div>
-            </div>
-            <div className="mt-4 text-xs">
-              <div className="font-semibold uppercase tracking-wider text-muted-foreground">Goals</div>
-              <ul className="mt-1 space-y-1 text-foreground">
-                {s.persona.goals.map((g) => <li key={g}>• {g}</li>)}
-              </ul>
-              <div className="mt-3 font-semibold uppercase tracking-wider text-muted-foreground">Challenges</div>
-              <ul className="mt-1 space-y-1 text-foreground">
-                {s.persona.challenges.map((c) => <li key={c}>• {c}</li>)}
-              </ul>
-            </div>
-          </PreviewCard>
-
-          {/* Channel Strategy */}
-          <PreviewCard icon={Network} label="Channel Strategy">
-            <ul className="space-y-2.5 text-sm">
-              {s.channelStrategy.map((c) => (
-                <li key={c.name} className="flex items-center justify-between">
-                  <span>{c.name}</span>
-                  <ChannelTag type={c.type} />
-                </li>
-              ))}
-            </ul>
-          </PreviewCard>
-
-          {/* Budget */}
-          <PreviewCard icon={PieChart} label="Budget Allocation">
-            <div className="space-y-3">
-              {s.budgetAllocation.map(({ channel, pct }) => (
-                <div key={channel}>
-                  <div className="mb-1 flex justify-between text-xs">
-                    <span className="text-foreground">{channel}</span>
-                    <span className="text-muted-foreground">{pct}%</span>
+            <div className="flex flex-col justify-between h-full gap-4">
+              <div className="rounded-xl border border-border bg-surface p-3 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white uppercase shadow-sm">
+                    {s.persona.title.slice(0, 2)}
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <div>
+                    <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Target Profile</div>
+                    <div className="text-xs font-bold text-foreground leading-tight">
+                      {s.persona.title} {s.persona.jobTitle ? `(${s.persona.jobTitle})` : ""}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-3 grid-cols-1">
+                <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 mb-1.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Core Objectives
+                  </div>
+                  <ul className="space-y-1 text-xs text-muted-foreground font-medium">
+                    {s.persona.goals.map((g) => <li key={g} className="flex gap-1">• {g}</li>)}
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-rose-600 mb-1.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> Primary Friction Points
+                  </div>
+                  <ul className="space-y-1 text-xs text-muted-foreground font-medium">
+                    {s.persona.challenges.map((c) => <li key={c} className="flex gap-1">• {c}</li>)}
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-indigo-600 mb-1.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Key Buying Factors
+                  </div>
+                  <ul className="space-y-1 text-xs text-muted-foreground font-medium">
+                    {(s.persona.keyBuyingFactors || []).map((f) => <li key={f} className="flex gap-1">• {f}</li>)}
+                  </ul>
+                </div>
+              </div>
+
+              {s.persona.decisionInfluence && (
+                <div className="rounded-xl border border-border bg-surface p-2.5 flex items-center gap-1.5 shadow-sm">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Influence:</span>
+                  <span className="text-xs text-foreground font-semibold leading-tight">{s.persona.decisionInfluence}</span>
+                </div>
+              )}
+            </div>
+          </PreviewCard>
+
+          {/* 4. Channel Strategy */}
+          <PreviewCard icon={Network} label="Channel Strategy" className="flex flex-col justify-between">
+            <div className="space-y-4">
+              {/* Paid Media */}
+              <div>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Paid Media</span>
+                </div>
+                <div className="space-y-1.5">
+                  {s.channelStrategy.filter(c => c.type === "Paid").map((ch, i) => (
+                    <div key={i} className="bg-surface p-2 rounded-lg border border-border flex items-center justify-between shadow-sm">
+                      <span className="text-xs font-bold text-foreground">{ch.name}</span>
+                      <span className="text-[9px] font-semibold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">PAID</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Owned Properties */}
+              <div>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Owned Properties</span>
+                </div>
+                <div className="space-y-1.5">
+                  {s.channelStrategy.filter(c => c.type === "Owned").map((ch, i) => (
+                    <div key={i} className="bg-surface p-2 rounded-lg border border-border flex items-center justify-between shadow-sm">
+                      <span className="text-xs font-bold text-foreground">{ch.name}</span>
+                      <span className="text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">OWNED</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Organic Growth */}
+              <div>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Organic Growth</span>
+                </div>
+                <div className="space-y-1.5">
+                  {s.channelStrategy.filter(c => c.type === "Organic").map((ch, i) => (
+                    <div key={i} className="bg-surface p-2 rounded-lg border border-border flex items-center justify-between shadow-sm">
+                      <span className="text-xs font-bold text-foreground">{ch.name}</span>
+                      <span className="text-[9px] font-semibold text-slate-500 bg-muted px-1.5 py-0.5 rounded">ORGANIC</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 border-t border-border pt-3 flex justify-between text-[10px]">
+              <div>
+                <span className="text-muted-foreground block text-[8px] uppercase font-bold tracking-wider">Primary Channel</span>
+                <span className="font-bold text-primary">{s.executiveSummary.primaryChannel}</span>
+              </div>
+              <div className="text-right">
+                <span className="text-muted-foreground block text-[8px] uppercase font-bold tracking-wider">Secondary</span>
+                <span className="font-bold text-foreground">{s.channelStrategy[1]?.name || "N/A"}</span>
+              </div>
+            </div>
+          </PreviewCard>
+
+          {/* 5. Budget Allocation */}
+          <PreviewCard icon={PieChart} label="Budget Allocation" className="flex flex-col justify-between">
+            <div className="space-y-4">
+              {s.budgetAllocation.map(({ channel, pct, estimatedBudget, purpose }) => (
+                <div key={channel} className="bg-surface p-3 rounded-xl border border-border shadow-sm">
+                  <div className="mb-1 flex items-baseline justify-between">
+                    <div className="flex gap-2 items-center">
+                      <span className="text-xs font-bold text-foreground">{channel}</span>
+                      {estimatedBudget && (
+                        <span className="text-[9px] font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                          {estimatedBudget}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs font-bold text-primary">{pct}%</span>
+                  </div>
+                  
+                  {/* Progress bar */}
+                  <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                     <div className="h-full rounded-full bg-gradient-hero" style={{ width: `${pct}%` }} />
                   </div>
+                  
+                  {purpose && (
+                    <p className="text-[9px] text-muted-foreground mt-1.5 leading-tight">
+                      <span className="font-semibold text-foreground">Purpose:</span> {purpose}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
+
+            <div className="mt-4 border-t border-border pt-3 flex justify-between items-center text-[10px]">
+              <div>
+                <span className="text-muted-foreground block text-[8px] uppercase font-bold tracking-wider">Estimated Budget</span>
+                <span className="font-bold text-sm text-emerald-600">{s.executiveSummary.budget}</span>
+              </div>
+              <div className="text-right text-[8px] text-muted-foreground italic leading-tight max-w-[150px]">
+                Allocated strictly to high-performing digital channels.
+              </div>
+            </div>
           </PreviewCard>
 
-          {/* Forecast */}
-          <PreviewCard icon={TrendingUp} label="Performance Forecast">
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { v: "80k–125k", l: "Reach" },
-                { v: "1.8k–2.7k", l: "Clicks" },
-                { v: "50–120", l: "Leads" },
-              ].map(({ v, l }) => (
-                <div key={l} className="rounded-lg border border-border bg-surface p-3 text-center">
-                  <div className="font-display text-sm font-bold text-gradient">{v}</div>
-                  <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{l}</div>
+          {/* 6. Performance Forecast */}
+          <PreviewCard icon={TrendingUp} label="Performance Forecast" className="lg:col-span-2 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between">
+              <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
+                {s.channelForecast.slice(0, 2).map((f) => {
+                  const metrics = f.metrics || {
+                    "Reach": f.reach || "N/A",
+                    "Clicks": f.clicks || "N/A",
+                    "Leads": f.leads || "N/A"
+                  };
+                  return (
+                    <div key={f.channel} className="rounded-xl border border-border bg-surface p-3 shadow-sm">
+                      <div className="text-xs font-bold text-foreground border-b border-border pb-1.5 mb-2 flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        {f.channel}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {Object.entries(metrics).map(([label, val]) => (
+                          <div key={label} className="bg-card p-2 rounded-lg text-center border border-border/60">
+                            <div className="text-xs font-bold text-foreground">{val}</div>
+                            <div className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Blended Forecast Summary */}
+              {s.forecastSummary && (
+                <div className="mt-4 grid gap-2 grid-cols-2 md:grid-cols-4 bg-slate-900 text-white rounded-xl p-3 shadow-md">
+                  <div className="px-2">
+                    <span className="text-slate-400 block text-[8px] uppercase font-bold tracking-wider">Monthly Output</span>
+                    <span className="font-bold text-xs text-indigo-400 leading-snug">{s.forecastSummary.monthlyResults}</span>
+                  </div>
+                  <div className="px-2 border-l border-slate-800">
+                    <span className="text-slate-400 block text-[8px] uppercase font-bold tracking-wider">Total Campaign</span>
+                    <span className="font-bold text-xs text-indigo-400 leading-snug">{s.forecastSummary.totalCampaignResults}</span>
+                  </div>
+                  <div className="px-2 border-l border-slate-800">
+                    <span className="text-slate-400 block text-[8px] uppercase font-bold tracking-wider">Efficiency</span>
+                    <span className="font-bold text-xs text-indigo-400 leading-snug">{s.forecastSummary.averagePrimaryMetric}</span>
+                  </div>
+                  <div className="px-2 border-l border-slate-800">
+                    <span className="text-slate-400 block text-[8px] uppercase font-bold tracking-wider">Success Metric</span>
+                    <span className="font-bold text-xs text-emerald-400 leading-snug">{s.forecastSummary.mainSuccessMetric}</span>
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           </PreviewCard>
 
-          {/* Creative Direction */}
-          <PreviewCard icon={Lightbulb} label="Creative Direction">
-            <div className="flex flex-wrap gap-2">
-              {["Carousel", "Case Study", "Industry Guide"].map((c) => (
-                <span key={c} className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium">{c}</span>
-              ))}
+          {/* 7. Recommended Priorities */}
+          <PreviewCard icon={AlertCircle} label="Recommended Priorities" className="flex flex-col justify-between">
+            <div className="space-y-3.5">
+              {s.recommendedPriorities && (
+                <>
+                  {/* High */}
+                  <div className="rounded-xl border border-rose-100 bg-rose-50/10 p-2.5 shadow-sm">
+                    <div className="flex items-center justify-between mb-1.5 border-b border-rose-100/50 pb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Operational Focus</span>
+                      <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-rose-700">High</span>
+                    </div>
+                    <ul className="space-y-1 text-xs text-foreground font-medium">
+                      {s.recommendedPriorities.high.map((item, i) => (
+                        <li key={i} className="flex gap-1.5 items-start">
+                          <span className="text-rose-500 font-bold shrink-0">›</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Medium */}
+                  <div className="rounded-xl border border-amber-100 bg-amber-50/10 p-2.5 shadow-sm">
+                    <div className="flex items-center justify-between mb-1.5 border-b border-amber-100/50 pb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Secondary Actions</span>
+                      <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-amber-700">Medium</span>
+                    </div>
+                    <ul className="space-y-1 text-xs text-foreground font-medium">
+                      {s.recommendedPriorities.medium.map((item, i) => (
+                        <li key={i} className="flex gap-1.5 items-start">
+                          <span className="text-amber-500 font-bold shrink-0">›</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Low */}
+                  <div className="rounded-xl border border-border bg-slate-50/30 p-2.5 shadow-sm">
+                    <div className="flex items-center justify-between mb-1.5 border-b border-border/50 pb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Later Optimizations</span>
+                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-slate-600">Low</span>
+                    </div>
+                    <ul className="space-y-1 text-xs text-foreground font-medium">
+                      {s.recommendedPriorities.low.map((item, i) => (
+                        <li key={i} className="flex gap-1.5 items-start">
+                          <span className="text-slate-400 font-bold shrink-0">›</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
+              )}
             </div>
+          </PreviewCard>
+
+          {/* 8. Implementation Timeline */}
+          <PreviewCard icon={Calendar} label="Implementation Timeline" className="lg:col-span-3">
+            {s.nextSteps && (
+              <div className="relative">
+                {/* Horizontal connector line on desktop */}
+                <div className="absolute top-4 left-6 right-6 h-0.5 bg-border hidden md:block" />
+                
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-4 relative z-10">
+                  {[
+                    { w: "Week 1", desc: s.nextSteps.week1 },
+                    { w: "Week 2", desc: s.nextSteps.week2 },
+                    { w: "Week 3", desc: s.nextSteps.week3 },
+                    { w: "Week 4", desc: s.nextSteps.week4 },
+                  ].map((step, idx) => (
+                    <div key={idx} className="bg-card p-4 rounded-xl border border-border hover:border-primary/20 transition-all duration-300 shadow-sm hover:shadow-md">
+                      <div className="flex items-center gap-2 mb-2 md:flex-col md:items-start">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground font-bold text-xs shadow-inner">
+                          {idx + 1}
+                        </span>
+                        <span className="text-xs font-bold text-foreground uppercase tracking-wider">{step.w}</span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">{step.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </PreviewCard>
         </div>
 
@@ -578,7 +846,7 @@ function OutputPreviewSection() {
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-3">
+    <div className="rounded-lg border border-border bg-surface p-3 shadow-sm">
       <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</dt>
       <dd className="mt-1 text-sm font-medium text-foreground">{value}</dd>
     </div>
@@ -607,7 +875,7 @@ function PreviewCard({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border border-border bg-card p-6 shadow-card transition-shadow hover:shadow-elevated ${className}`}>
+    <div className={`rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:shadow-glow hover:border-primary/20 hover:-translate-y-1 ${className}`}>
       <div className="mb-4 flex items-center gap-2">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-hero text-primary-foreground">
           <Icon className="h-3.5 w-3.5" />
