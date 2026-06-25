@@ -92,13 +92,13 @@ function Landing() {
         </div>
       ) : null}
       {strategyData ? (
-        <section id="strategy-slides" className="bg-gradient-soft py-24 lg:py-28">
+        <section id="strategy-slides" className="bg-slate-950 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 py-24 lg:py-28 border-y border-slate-800/80 shadow-inner">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Your Marketing Strategy
               </h2>
-              <p className="mt-4 text-muted-foreground">
+              <p className="mt-4 text-indigo-200/70">
                 A stakeholder-ready deck generated from your answers.
               </p>
             </div>

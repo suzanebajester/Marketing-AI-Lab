@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   ChevronLeft, ChevronRight, Target, Users, Network, PieChart, 
   TrendingUp, Globe, AlertCircle, Calendar, CheckCircle, Shield, 
@@ -18,15 +18,28 @@ export function StrategySlides({ strategy }: Props) {
   const prev = () => setIndex((i) => Math.max(0, i - 1));
   const next = () => setIndex((i) => Math.min(total - 1, i + 1));
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        setIndex((i) => Math.max(0, i - 1));
+      } else if (e.key === "ArrowRight") {
+        setIndex((i) => Math.min(total - 1, i + 1));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [total]);
+
   return (
     <div className="mx-auto w-full max-w-5xl font-sans">
       {/* Print PDF Button - floats at the top-right in desktop */}
       <div className="no-print mb-6 flex justify-end gap-2">
         <button
           onClick={() => window.print()}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3.5 py-2 text-xs font-semibold text-slate-300 shadow-glow hover:bg-slate-800 hover:text-white hover:border-slate-700 transition-all cursor-pointer"
         >
-          <Printer className="h-4 w-4 text-indigo-600" /> Print / Export Presentation (PDF)
+          <Printer className="h-4 w-4 text-indigo-400" /> Print / Export Presentation (PDF)
         </button>
       </div>
 
@@ -48,11 +61,38 @@ export function StrategySlides({ strategy }: Props) {
       </div>
 
       {/* Desktop view: 16:9 interactive PowerPoint-style deck */}
-      <div className="hidden md:block no-print">
+      <div className="hidden md:block no-print relative group/deck">
+        {/* Left Floating Chevron */}
+        <button
+          onClick={prev}
+          disabled={index === 0}
+          className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-14 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900/60 backdrop-blur-sm text-slate-400 shadow-glow transition-all duration-200 hover:bg-slate-800 hover:text-white disabled:opacity-0 cursor-pointer ${
+            index === 0 ? "pointer-events-none" : ""
+          }`}
+          aria-label="Previous Slide"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        {/* Right Floating Chevron */}
+        <button
+          onClick={next}
+          disabled={index === total - 1}
+          className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-14 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900/60 backdrop-blur-sm text-slate-400 shadow-glow transition-all duration-200 hover:bg-slate-800 hover:text-white disabled:opacity-0 cursor-pointer ${
+            index === total - 1 ? "pointer-events-none" : ""
+          }`}
+          aria-label="Next Slide"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
         <div 
-          className="relative w-full rounded-2xl border border-slate-200 bg-white p-8 shadow-xl overflow-hidden flex flex-col justify-between"
+          className="relative w-full rounded-2xl border border-slate-200 bg-white p-8 shadow-2xl overflow-hidden flex flex-col justify-between"
           style={{ aspectRatio: "16 / 9" }}
         >
+          {/* Subtle Grid overlay background inside slide */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.015)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+
           {/* Subtle gradient shape background */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-indigo-50/40 to-slate-50/10 rounded-full blur-3xl -z-10" />
 
@@ -80,29 +120,48 @@ export function StrategySlides({ strategy }: Props) {
           </div>
         </div>
 
-        {/* Presentation controls */}
-        <div className="mt-6 flex items-center justify-between">
-          <Button variant="outline" onClick={prev} disabled={index === 0} className="shadow-sm">
-            <ChevronLeft className="h-4 w-4 mr-1.5" /> Previous
-          </Button>
-          
-          {/* Slide indicators */}
-          <div className="flex items-center gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => setIndex(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === index ? "w-8 bg-indigo-600" : "w-2 bg-slate-200 hover:bg-slate-300"
-                }`}
-              />
-            ))}
-          </div>
+        {/* Presentation controls (floating pill toolbar) */}
+        <div className="mt-8 flex justify-center">
+          <div className="flex items-center gap-6 rounded-full border border-slate-800 bg-slate-900/80 backdrop-blur-md px-6 py-2.5 shadow-2xl">
+            {/* Left Button */}
+            <button
+              onClick={prev}
+              disabled={index === 0}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400 transition-colors cursor-pointer"
+              title="Previous Slide (←)"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            
+            {/* Slide indicators / dots */}
+            <div className="flex items-center gap-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  aria-label={`Go to slide ${i + 1}`}
+                  onClick={() => setIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === index ? "w-6 bg-indigo-500" : "w-1.5 bg-slate-700 hover:bg-slate-500"
+                  }`}
+                />
+              ))}
+            </div>
 
-          <Button variant="outline" onClick={next} disabled={index === total - 1} className="shadow-sm">
-            Next <ChevronRight className="h-4 w-4 ml-1.5" />
-          </Button>
+            {/* Right Button */}
+            <button
+              onClick={next}
+              disabled={index === total - 1}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400 transition-colors cursor-pointer"
+              title="Next Slide (→)"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+
+            {/* Keyboard shortcut hint */}
+            <span className="border-l border-slate-800 pl-4 text-[9px] font-medium tracking-wider text-slate-500 uppercase">
+              Use ← / → keys
+            </span>
+          </div>
         </div>
       </div>
 
@@ -162,9 +221,9 @@ export function StrategySlides({ strategy }: Props) {
             width: 100% !important;
             max-w: none !important;
             margin: 0 !important;
-            padding: 1.5rem 2rem !important;
+            padding: 1rem 1.5rem !important;
             box-sizing: border-box !important;
-            height: 100vh !important;
+            height: 90vh !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
           }
@@ -182,22 +241,22 @@ export function StrategySlides({ strategy }: Props) {
           .slide-page .text-base { font-size: 11px !important; }
           .slide-page .text-lg { font-size: 12px !important; }
           .slide-page .text-xl { font-size: 14px !important; }
-          .slide-page .text-2xl { font-size: 16px !important; }
-          .slide-page .text-3xl { font-size: 18px !important; }
-          .slide-page .text-4xl { font-size: 20px !important; }
+          .slide-page .text-2xl { font-size: 14px !important; }
+          .slide-page .text-3xl { font-size: 16px !important; }
+          .slide-page .text-4xl { font-size: 18px !important; }
           
-          .slide-page .p-4 { padding: 0.75rem !important; }
-          .slide-page .p-6 { padding: 1rem !important; }
-          .slide-page .py-12 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+          .slide-page .p-4 { padding: 0.5rem 0.75rem !important; }
+          .slide-page .p-6 { padding: 0.75rem 1rem !important; }
+          .slide-page .py-12 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
           .slide-page .py-4 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
           .slide-page .my-2 { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
           .slide-page .mt-12 { margin-top: 0.5rem !important; }
           .slide-page .mt-6 { margin-top: 0.25rem !important; }
           .slide-page .mt-3 { margin-top: 0.25rem !important; }
-          .slide-page .gap-3 { gap: 0.5rem !important; }
-          .slide-page .gap-5 { gap: 0.75rem !important; }
+          .slide-page .gap-3 { gap: 0.35rem !important; }
+          .slide-page .gap-5 { gap: 0.5rem !important; }
           .slide-page .mb-6 { margin-bottom: 0.5rem !important; }
-          .slide-page .mt-14 { margin-top: 0.75rem !important; }
+          .slide-page .mt-14 { margin-top: 0.5rem !important; }
           
           /* Compress header and footer items */
           .slide-page > div:first-child {
