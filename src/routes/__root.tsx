@@ -56,16 +56,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Marketing AI Lab - AI Campaign Generator" },
-      { name: "description", content: "Turn a simple brief into a complete campaign plan in minutes." },
-      { property: "og:title", content: "Marketing AI Lab - AI Campaign Generator" },
-      { property: "og:description", content: "Turn a simple brief into a complete campaign plan in minutes." },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://marketingailab.app/og-image-v2.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Marketing AI Lab - AI Campaign Generator" },
-      { name: "twitter:description", content: "Turn a simple brief into a complete campaign plan in minutes." },
-      { name: "twitter:image", content: "https://marketingailab.app/og-image-v2.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
