@@ -47,14 +47,11 @@ function Landing() {
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
       
-      console.log("Marketing AI Lab received Typebot payload:", payload);
-
       // 1. Check if we can parse the strategy JSON immediately from any message
       const answersObj = payload.answers ?? payload.data ?? payload;
       const parsedJson = tryParseTypebotJson(answersObj);
       
       if (parsedJson) {
-        console.log("Found valid JSON in payload, mapping to strategy...");
         const strategy = mapTypebotJsonToStrategy(parsedJson);
         setStrategyData(strategy);
         toast.success("Sua estratégia está pronta!");
@@ -74,7 +71,6 @@ function Landing() {
 
       if (!isCompletion) return;
 
-      console.log("Completion event received from Typebot, loading fallback strategy...");
       const strategy = buildStrategyFromAnswers(answersObj);
       setStrategyData(strategy);
       toast.success("Sua estratégia está pronta!");
@@ -150,7 +146,6 @@ function tryParseTypebotJson(answers: Record<string, unknown>): any | null {
         try {
           const parsed = JSON.parse(jsonStr);
           if (parsed.executive_summary || parsed.executiveSummary || parsed.buyer_persona || parsed.persona) {
-            console.log("Successfully found and parsed campaign JSON from Typebot key:", key);
             return parsed;
           }
         } catch (e) {
