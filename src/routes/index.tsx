@@ -14,14 +14,14 @@ import { StrategySlides } from "@/components/StrategySlides";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Marketing AI Lab | AI-Powered Marketing Strategy Generator" },
-      { name: "description", content: "Turn a simple brief into a complete marketing strategy. Get buyer personas, channel plans, budget allocation, performance forecasts and creative direction in minutes." },
-      { property: "og:title", content: "Marketing AI Lab" },
-      { property: "og:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
+      { title: "Marketing AI Lab | AI Marketing Strategy Generator" },
+      { name: "description", content: "Turn a simple brief into a complete marketing strategy with persona, channel planning, budget, and creative direction. Generate in minutes." },
+      { property: "og:title", content: "Marketing AI Lab | AI Marketing Strategy Generator" },
+      { property: "og:description", content: "Turn a simple brief into a complete marketing strategy with persona, channel planning, budget, and creative direction. Generate in minutes." },
       { property: "og:image", content: "https://marketingailab.app/og-image-v2.png" },
       { property: "og:url", content: "https://marketingailab.app/" },
-      { name: "twitter:title", content: "Marketing AI Lab" },
-      { name: "twitter:description", content: "Turn a simple brief into a complete AI-powered marketing strategy." },
+      { name: "twitter:title", content: "Marketing AI Lab | AI Marketing Strategy Generator" },
+      { name: "twitter:description", content: "Turn a simple brief into a complete marketing strategy with persona, channel planning, budget, and creative direction. Generate in minutes." },
       { name: "twitter:image", content: "https://marketingailab.app/og-image-v2.png" },
     ],
     links: [
