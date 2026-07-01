@@ -76,6 +76,15 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Cookiebot */}
+        <script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="fa297c2a-b7f9-4238-a55d-f4b60c3243e8"
+          data-blockingmode="auto"
+          type="text/javascript"
+        />
+        {/* End Cookiebot */}
         {/* Google Tag Manager */}
         <script dangerouslySetInnerHTML={{
           __html: `
